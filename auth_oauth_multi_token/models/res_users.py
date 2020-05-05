@@ -65,35 +65,50 @@ class ResUsers(models.Model):
         })
 
         try:
-            user = self.env['res.users'].search([('id', '=', user.id)])
-            user.write({'share': False})
+            if validation['@odata.context'] == "https://graph.microsoft.com/v1.0/$metadata#users/$entity":   
+                
+                email = validation['userPrincipalName']
+                name = validation['displayName']
 
-            # Busca empleado con el mismo email registrado en odoo y en active directory
-            id_e = self.env['hr.employee'].search([('work_email', 'ilike', validation['userPrincipalName'])],
-                                                  limit=1).id
-            # Si el empleado existe
-            if id_e:
-                # Busca que el empleado tenga el ya asignado algun usuario
-                id_u = self.env['hr.employee'].search([('id', '=', id_e), ('user_id', '=', user.id)], limit=1).id
-                # Si empleado no tiene al usuario relacionado
-                if id_u is False:
-                    # Relaciona al empleado con el usuario
-                    employee = self.env['hr.employee'].search([('id', '=', id_e)])
-                    employee.write({'user_id': user.id})
+                user = self.env['res.users'].search([('id', '=', user.id)])
+                
+                if user.name != name:
+                
+                    user.write({
+                        'share': False, 
+                        'name': name, 
+                        'login': email,
+                        'email': email,
+                        'active': True,
+                        'company_id': 1 
+                    })
 
-                    # Busca empleado con el mismo email registrado en odoo y en active directory
-                    id_p = self.env['res.partner'].search([('email', '=', validation['userPrincipalName'])],
-                                                          limit=1).id
-                    # Si el empleado existe
-                    if id_p:
-                        partner = self.env['res.partner'].search([('id', '=', id_p)])
-                        partner.write({'parent_id': 1, 'company_id': 1, 'employee': 'true'})
+                # Busca empleado con el mismo email registrado en odoo y en active directory
+                id_e = self.env['hr.employee'].search([('work_email', 'ilike', validation['userPrincipalName'])],
+                                                      limit=1).id
+                # Si el empleado existe
+                if id_e:
+                    # Busca que el empleado tenga el ya asignado algun usuario
+                    id_u = self.env['hr.employee'].search([('id', '=', id_e), ('user_id', '=', user.id)], limit=1).id
+                    # Si empleado no tiene al usuario relacionado
+                    if id_u is False:
+                        # Relaciona al empleado con el usuario
+                        employee = self.env['hr.employee'].search([('id', '=', id_e)])
+                        employee.write({'user_id': user.id})
 
-                        group_e = self.env.ref('base.group_portal', False)
-                        group_e.write({'users': [(3, user.id)]})
+                        # Busca empleado con el mismo email registrado en odoo y en active directory
+                        id_p = self.env['res.partner'].search([('email', '=', validation['userPrincipalName'])],
+                                                              limit=1).id
+                        # Si el empleado existe
+                        if id_p:
+                            partner = self.env['res.partner'].search([('id', '=', id_p)])
+                            partner.write({'parent_id': 1, 'company_id': 1, 'employee': 'true'})
 
-                        group_u = self.env.ref('base.group_user', False)
-                        group_u.write({'users': [(4, user.id)]})
+                            group_e = self.env.ref('base.group_portal', False)
+                            group_e.write({'users': [(3, user.id)]})
+
+                            group_u = self.env.ref('base.group_user', False)
+                            group_u.write({'users': [(4, user.id)]})
 
         except Exception as e:
             print("Mensaje: ", e)
