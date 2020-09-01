@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="action_tabla_vacaciones" model="ir.actions.act_window">
+        <field name="name">Vacaciones</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">tabla.vacaciones</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crea tu tabla de vacacionés
+            </p>
+        </field>
+    </record>
+
+    <menuitem
+        id="menu_hr_payroll_tabla_vacaciones"
+        name="Tabla Vacaciones"
+        parent="menu_hr_payroll_tabla_nomina"
+        action="action_tabla_vacaciones"
+        sequence="65"/>
+</odoo>

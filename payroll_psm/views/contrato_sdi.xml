@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_hr_contract_form_inherit" model="ir.ui.view">
+        <field name="name">view.hr.contract.form.inherit</field>
+        <field name="model">hr.contract</field>
+        <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='information']" position="after">
+                <page string="Datos de Nomina">
+                    <form string="Nomina">
+                        <group>
+                            <group string="Nomina">
+                                <field name="tabla_nomina"/>
+                                <field name="fecha_antiguedad"/>
+                                <field name="ingreso_anual"/>
+                                <field name="salario_diario"/>
+                                <field name="ingreso_variable_mensual"/>
+                                <field name="variable_marzo"/>
+                                <field name="variable_abril"/>
+                                <field name="porcentaje_prima_vacacional"/>
+                            </group>
+                            <group string="SDI">
+                                <field name="antiguedad"/>
+                                <field name="dias_de_vacaciones"/>
+                                <field name="aguinaldo"/>
+                                <field name="prima_vacacional"/>
+                                <field name="despensa_en_efectivo"/>
+                                <field name="dias"/>
+                                <field name="sdi"/>
+                                <field name="tope_salario"/>
+                                <field name="tope_exento"/>
+                                <field name="exedente"/>
+                            </group>
+                        </group>
+                    </form>
+                </page>
+            </xpath>
+            <xpath expr="//page[@name='information']" position="after">
+                <page string="Salida">
+                    <form string="Salida">
+                        <group>
+                            <group>
+                                <field name="departure_reason"/>
+                                <field name="departure_description"/>
+                            </group>
+                            <group>
+                            </group>
+                        </group>
+                    </form>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
