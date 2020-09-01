@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_tabla_nomina,access.tabla.nomina,model_tabla_nomina,,1,1,1,1
+access_tabla_vacaciones,access.tabla.vacaciones,model_tabla_vacaciones,,1,1,1,1
+access_tabla_isr,access.tabla.isr,model_tabla_isr,,1,1,1,1
+access_tabla_subsidio_empleo,access.tabla.subsidio.empleo,model_tabla_subsidio_empleo,,1,1,1,1

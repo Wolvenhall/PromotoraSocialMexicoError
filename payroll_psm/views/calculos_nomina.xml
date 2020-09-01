@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_hr_payslip_form_inherit" model="ir.ui.view">
+        <field name="name">view.hr.payslip.form.inherit</field>
+        <field name="model">hr.payslip</field>
+        <field name="inherit_id" ref="hr_payroll.view_hr_payslip_form"/>
+        <field name="arch" type="xml">
+
+        <xpath expr="//page[@name='account_info']" position="after">
+            <page string="Retención IMSS">
+                <form string="Employee Function">
+                    <group>
+                        <group string="IMSS">
+                            <field name="tope_salario"/>
+                            <field name="dias_de_cotizacion"/>
+                            <field name="dias_incapacidad"/>
+                            <field name="dias_ausencia"/>
+                        </group>
+                        <group string="Prestaciones en especie">
+                            <field name="pe_fija_patron"/>
+                            <field name="pe_smg_trabajador"/>
+                            <field name="pe_smg_patron"/>
+                            <field name="pe_smg_total"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Prestaciones en dinero">
+                            <field name="pd_unica_trabajador"/>
+                            <field name="pd_unica_patron"/>
+                            <field name="pd_unica_total"/>
+                        </group>
+                        <group string="Gastos medicos pensionados">
+                            <field name="gmp_trabajador"/>
+                            <field name="gmp_patron"/>
+                            <field name="gmp_total"/>
+                            <field name="rt"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Invalidez y vida">
+                            <field name="iv_trabajador"/>
+                            <field name="iv_patron"/>
+                            <field name="iv_total"/>
+                        </group>
+                        <group string="Guarderias y prestaciones sociales">
+                            <field name="gps_trabajador"/>
+                            <field name="gps_patron"/>
+                            <field name="gps_total"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Cuota mensual">
+                            <field name="cm_trabajador"/>
+                            <field name="cm_patron"/>
+                            <field name="cm_total"/>
+                        </group>
+                        <group string="Cesantia y vejez">
+                            <field name="cv_trabajador"/>
+                            <field name="cv_patron"/>
+                            <field name="cv_total"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Retiro">
+                            <field name="retiro_trabajador"/>
+                            <field name="retiro_patron"/>
+                            <field name="retiro_total"/>
+                        </group>
+                        <group string="Total RCV">
+                            <field name="total_rcv_trabajador"/>
+                            <field name="total_rcv_patron"/>
+                            <field name="total_rcv_total"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Infonavit">
+                            <field name="total_infonavit_trabajador"/>
+                            <field name="total_infonavit_patron"/>
+                            <field name="total_infonavit_total"/>
+                        </group>
+                        <group string="Total Retención trabajador">
+                            <field name="total_retencion_trabajador"/>
+                        </group>
+                    </group>
+                </form>
+            </page>
+        </xpath>
+        <xpath expr="//page[@name='account_info']" position="after">
+            <page string="Retención ISR">
+                <form string="Employee Function">
+                    <group>
+                        <group>
+                            <field name="ingreso_quincenal"/>
+                            <field name="despensa_en_efectivo"/>
+                            <field name="base_gravable"/>
+                            <field name="limite_inferior"/>
+                            <field name="exedente_limite_inferior"/>
+                            <field name="porcentaje_exedente_limite_inferior"/>
+                        </group>
+                        <group>
+                            <field name="impuesto_marginal"/>
+                            <field name="cuota_fija"/>
+                            <field name="impuesto_articulo_113"/>
+                            <field name="subsidio_al_empleo"/>
+                            <field name="isr_mensual"/>
+                            <field name="isr_retenido"/>
+                        </group>
+                    </group>
+                </form>
+            </page>
+        </xpath>
+
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="action_tabla_subsidio_empleo" model="ir.actions.act_window">
+        <field name="name">Subsidio Empleo</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">tabla.subsidio.empleo</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crea tu tabla de subsidio de empleo
+            </p>
+        </field>
+    </record>
+
+    <menuitem
+        id="menu_hr_payroll_tabla_subsidio_empleo"
+        name="Tabla Subsidio Empleo"
+        parent="menu_hr_payroll_tabla_nomina"
+        action="action_tabla_subsidio_empleo"
+        sequence="67"/>
+</odoo>
