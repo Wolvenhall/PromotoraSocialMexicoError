@@ -1,156 +1,169 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-   <record id="form_tabla_nomina_view" model="ir.ui.view">
-        <field name="name">tabla.nomina.form</field>
-        <field name="model">tabla.nomina</field>
-        <field name="arch" type="xml">
-            <form string="Tablas nomina">
-                 <field name="name" string="Nombre de la tabla de nomina" placeholder="Nombre de la tabla de nomina"/>
-                 <notebook position="inside">
-                     <page name="tabla_nomina" string="Tablas Nomina">
-                        <group>
-                            <group>
-                                <field name="dias_de_vacaciones" string="Tabla de vacaciones">
-                                    <tree string="Vacaciones" editable="bottom">
-                                        <field name="antiguedad_minima"/>
-                                        <field name="antiguedad_maxima"/>
-                                        <field name="dias_vacaciones"/>
-                                    </tree>
-                                </field>
-                                <field name="isr" string="ISR Art. 113">
-                                    <tree editable="bottom">
-                                        <field name="limite_inferior"/>
-                                        <field name="limite_superior"/>
-                                        <field name="cuota_fija"/>
-                                        <field name="exedente"/>
-                                    </tree>
-                                </field>
-                                <field name="subsidio_para_el_empleo" string="Subsidio empleo">
-                                    <tree editable="bottom">
-                                        <field name="limite_inferior"/>
-                                        <field name="limite_superior"/>
-                                        <field name="credito"/>
-                                    </tree>
-                                </field>
-                            </group>
-                            <group>
-                            </group>
-                       </group>
-                     </page>
-                     <page name="salario_uma" string="Salarios mínimos y UMA">
-                            <group>
-                                <group>
-                                    <field name="uma"/>
-                                    <field name="salario_minimo"/>
-                                    <field name="periodo_mensual_en_dias"/>
-                                </group>
-                                <group>
-                                    <field name="porcentaje_prima_de_riesgo"/>
-                                    <field name="porcentaje_prima_vacacional"/>
-                                    <field name="limite_inv_y_vid_y_cv"/>
-                                    <field name="salario_minimo_vigente"/>
-                                </group>
-                            </group>
-                     </page>
-                     <page name="imss_infonavit" string="Seguro social e Infonavit">
-                         <group>
-                             <group string="Cuota Fija">
-                                 <field name="cuota_fija_trabajador"/>
-                                 <field name="cuota_fija_patron"/>
-                                 <field name="cuota_fija_total" readonly="1"/>
-                             </group>
-                             <group string="Excedente">
-                                 <field name="excedente_trabajador"/>
-                                 <field name="excedente_patron"/>
-                                 <field name="excedente_total" readonly="1"/>
-                             </group>
-                         </group>
-                         <group>
-                             <group string="Prestaciones de dinero">
-                                 <field name="prestaciones_en_dinero_trabajador"/>
-                                 <field name="prestaciones_en_dinero_patron"/>
-                                 <field name="prestaciones_en_dinero_total" readonly="1"/>
-                             </group>
-                             <group string="Gastos Medicos Pensionados">
-                                 <field name="gastos_medicos_pensionados_trabajador"/>
-                                 <field name="gastos_medicos_pensionados_patron"/>
-                                 <field name="gastos_medicos_pensionados_total" readonly="1"/>
-                             </group>
-                         </group>
-                         <group>
-                             <group string="Invalidez y vida">
-                                 <field name="invalidez_y_vida_trabajador"/>
-                                 <field name="invalidez_y_vida_patron"/>
-                                 <field name="invalidez_y_vida_total" readonly="1"/>
-                             </group>
-                             <group string="Guarderias y gastos de prevision">
-                                 <field name="guarderias_y_gastos_de_prevision_social_trabajador"/>
-                                 <field name="guarderias_y_gastos_de_prevision_social_patron"/>
-                                 <field name="guarderias_y_gastos_de_prevision_social_total" readonly="1"/>
-                             </group>
-                         </group>
-                         <group>
-                             <group string="Cesantia y vejez">
-                                 <field name="cesantia_y_vejez_trabajador"/>
-                                 <field name="cesantia_y_vejez_patron"/>
-                                 <field name="cesantia_y_vejez_total" readonly="1"/>
-                             </group>
-                             <group string="Retiro">
-                                 <field name="retiro_trabajador"/>
-                                 <field name="retiro_patron"/>
-                                 <field name="retiro_total" readonly="1"/>
-                             </group>
-                         </group>
-                         <group>
-                             <group string="INFONAVIT">
-                                 <field name="infonavit_trabajador"/>
-                                 <field name="infonavit_patron"/>
-                                 <field name="infonavit_total" readonly="1"/>
-                             </group>
-                             <group>
-                             </group>
-                         </group>
-                     </page>
-                 </notebook>
-            </form>
-       </field>
-    </record>
+    <data>
+       <record id="form_tabla_nomina_view" model="ir.ui.view">
+            <field name="name">tabla.nomina.form</field>
+            <field name="model">tabla.nomina</field>
+            <field name="arch" type="xml">
+                <form string="Tablas nomina">
+                    <sheet>
+                         <div class="oe_title">
+                            <div>
+                                <label for="name"/>
+                            </div>
+                            <h1>
+                                <field name="name" string="Nombre de la tabla de nomina" placeholder="Nombre de la tabla de nomina"/>
+                            </h1>
+                         </div>                         
+                         <notebook position="inside">
+                             <page name="tabla_nomina" string="Tablas Nomina">
+                                <group>                                   
+                                        <field name="dias_de_vacaciones" string="Tabla de vacaciones">
+                                            <tree string="Vacaciones" editable="bottom">
+                                                <field name="antiguedad_minima"/>
+                                                <field name="antiguedad_maxima"/>
+                                                <field name="dias_vacaciones"/>
+                                            </tree>
+                                        </field>
+                                        <field name="tabla_efectos_cotizacion" string="Tabla Efectos de Cotizacion">
+                                            <tree string="Cotizacion" editable="bottom">
+                                                <field name="antiguedad_minima"/>
+                                                <field name="antiguedad_maxima"/>
+                                                <field name="dias_vacaciones"/>
+                                            </tree>
+                                        </field>
+                                        <field name="isr" string="ISR Art. 113">
+                                            <tree editable="bottom">
+                                                <field name="limite_inferior"/>
+                                                <field name="limite_superior"/>
+                                                <field name="cuota_fija"/>
+                                                <field name="exedente"/>
+                                            </tree>
+                                        </field>
+                                        <field name="subsidio_para_el_empleo" string="Subsidio empleo">
+                                            <tree editable="bottom">
+                                                <field name="limite_inferior"/>
+                                                <field name="limite_superior"/>
+                                                <field name="credito"/>
+                                            </tree>
+                                        </field>                                    
+                               </group>
+                             </page>
+                             <page name="salario_uma" string="Salarios mínimos y UMA">
+                                    <group>
+                                        <group>
+                                            <field name="uma"/>
+                                            <field name="salario_minimo"/>
+                                            <field name="periodo_mensual_en_dias"/>
+                                        </group>
+                                        <group>
+                                            <field name="porcentaje_prima_de_riesgo"/>
+                                            <field name="porcentaje_prima_vacacional"/>
+                                            <field name="limite_inv_y_vid_y_cv"/>
+                                            <field name="salario_minimo_vigente"/>
+                                        </group>
+                                    </group>
+                             </page>
+                             <page name="imss_infonavit" string="Seguro social e Infonavit">
+                                 <group>
+                                     <group string="Cuota Fija">
+                                         <field name="cuota_fija_trabajador"/>
+                                         <field name="cuota_fija_patron"/>
+                                         <field name="cuota_fija_total" readonly="1"/>
+                                     </group>
+                                     <group string="Excedente">
+                                         <field name="excedente_trabajador"/>
+                                         <field name="excedente_patron"/>
+                                         <field name="excedente_total" readonly="1"/>
+                                     </group>
+                                 </group>
+                                 <group>
+                                     <group string="Prestaciones de dinero">
+                                         <field name="prestaciones_en_dinero_trabajador"/>
+                                         <field name="prestaciones_en_dinero_patron"/>
+                                         <field name="prestaciones_en_dinero_total" readonly="1"/>
+                                     </group>
+                                     <group string="Gastos Medicos Pensionados">
+                                         <field name="gastos_medicos_pensionados_trabajador"/>
+                                         <field name="gastos_medicos_pensionados_patron"/>
+                                         <field name="gastos_medicos_pensionados_total" readonly="1"/>
+                                     </group>
+                                 </group>
+                                 <group>
+                                     <group string="Invalidez y vida">
+                                         <field name="invalidez_y_vida_trabajador"/>
+                                         <field name="invalidez_y_vida_patron"/>
+                                         <field name="invalidez_y_vida_total" readonly="1"/>
+                                     </group>
+                                     <group string="Guarderias y gastos de prevision">
+                                         <field name="guarderias_y_gastos_de_prevision_social_trabajador"/>
+                                         <field name="guarderias_y_gastos_de_prevision_social_patron"/>
+                                         <field name="guarderias_y_gastos_de_prevision_social_total" readonly="1"/>
+                                     </group>
+                                 </group>
+                                 <group>
+                                     <group string="Cesantia y vejez">
+                                         <field name="cesantia_y_vejez_trabajador"/>
+                                         <field name="cesantia_y_vejez_patron"/>
+                                         <field name="cesantia_y_vejez_total" readonly="1"/>
+                                     </group>
+                                     <group string="Retiro">
+                                         <field name="retiro_trabajador"/>
+                                         <field name="retiro_patron"/>
+                                         <field name="retiro_total" readonly="1"/>
+                                     </group>
+                                 </group>
+                                 <group>
+                                     <group string="INFONAVIT">
+                                         <field name="infonavit_trabajador"/>
+                                         <field name="infonavit_patron"/>
+                                         <field name="infonavit_total" readonly="1"/>
+                                     </group>
+                                     <group>
+                                     </group>
+                                 </group>
+                             </page>
+                         </notebook>
+                  </sheet>
+                </form>
+           </field>
+        </record>
 
-   <record id="tree_tabla_nomina_view" model="ir.ui.view">
-        <field name="name">tabla.nomina.tree</field>
-        <field name="model">tabla.nomina</field>
-        <field name="arch" type="xml">
-            <tree string="Tablas nomina">
-               <field name="name"/>
-            </tree>
-        </field>
-    </record>
+       <record id="tree_tabla_nomina_view" model="ir.ui.view">
+            <field name="name">tabla.nomina.tree</field>
+            <field name="model">tabla.nomina</field>
+            <field name="arch" type="xml">
+                <tree string="Tablas nomina">
+                   <field name="name"/>
+                </tree>
+            </field>
+        </record>
 
-   <record id="search_tabla_nomina_view" model="ir.ui.view">
-        <field name="name">tabla.nomina.search.view</field>
-        <field name="model">tabla.nomina</field>
-        <field name="arch" type="xml">
-            <search string="Tablas Nomina SAT">
-               <field name="name" />
-            </search>
-        </field>
-    </record>
+       <record id="search_tabla_nomina_view" model="ir.ui.view">
+            <field name="name">tabla.nomina.search.view</field>
+            <field name="model">tabla.nomina</field>
+            <field name="arch" type="xml">
+                <search string="Tablas Nomina SAT">
+                   <field name="name" />
+                </search>
+            </field>
+        </record>
 
-   <record id="action_tree_tabla_nomina" model="ir.actions.act_window">
-        <field name="name">Tabla nomina</field>
-        <field name="res_model">tabla.nomina</field>
-        <field name="view_mode">tree,form</field>
-        <field name="view_id" ref="tree_tabla_nomina_view" />
-        <field name="search_view_id" ref="search_tabla_nomina_view" />
-        <field name="context">{}</field>
-    </record>
+       <record id="action_tree_tabla_nomina" model="ir.actions.act_window">
+            <field name="name">Tabla nomina</field>
+            <field name="res_model">tabla.nomina</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="tree_tabla_nomina_view" />
+            <field name="search_view_id" ref="search_tabla_nomina_view" />
+            <field name="context">{}</field>
+        </record>
 
-   <menuitem id="menu_hr_payroll_tabla_nomina" name="Tablas Nominas" parent="hr_payroll.menu_hr_payroll_root" sequence="63"/>
-
-   <menuitem
-           id="menu_hr_payroll_tabla_nomina_submenu"
-           name="Tabla Nomina"
-           parent="menu_hr_payroll_tabla_nomina"
-           action="action_tree_tabla_nomina"
-           sequence="54"/>
+       <menuitem 
+                 id="menu_hr_payroll_tabla_nomina" 
+                 name="Configuración Anual" 
+                 parent="hr_payroll.menu_hr_salary_configuration" 
+                 action="action_tree_tabla_nomina"
+                 sequence="63"/>
+       
+    </data>
 </odoo>
