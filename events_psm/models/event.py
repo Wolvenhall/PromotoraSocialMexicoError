@@ -11,18 +11,20 @@ from odoo import modules
 class Event(models.Model):
     _inherit = "event.event"
     
-    @api.onchange('date_begin')
+    @api.onchange('date_begin', 'date_end')
     def _hora_registro_y_salida(self):
-        if is_online:    
+        
+        if self.is_online and self.date_begin and self.date_end:    
+            
+            diferencia_de_fechas = self.date_end - self.date_begin
+            evento_en_horas = diferencia_de_fechas.total_seconds() / 3600        
             
             self.x_studio_hora_de_registro = self.date_begin
             self.x_studio_hora_de_salida = self.date_end
-            
-            diferencia_de_fechas = self.x_studio_hora_de_salida - self.x_studio_hora_de_registro
-            evento_en_horas = diferencia_de_fechas.total_seconds() / 3600                       
             self.x_studio_duracion_del_evento = evento_en_horas
             
-        else:
+        elif self.is_online == False and self.date_begin and self.date_end:  
+            
             hora_de_registro = self.date_begin - timedelta(hours=0, minutes=30)
             hora_de_salida = self.date_end + timedelta(hours=0, minutes=30)
             
