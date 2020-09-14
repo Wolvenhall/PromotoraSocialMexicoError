@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="event_form_view_inherit" model="ir.ui.view">
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <data>
+                <xpath expr="//form[1]/sheet[1]/div[not(@name)][1]" position="after">
+                    <group name="studio_group_9StUL">
+                        <group name="studio_group_9StUL_left">
+                            <field name="x_solicitud_de_evento" force_save="True" attrs="{}" readonly="1"/>
+                            <field name="x_solicitante"/>
+                            <field name="x_solicitud_enviada_en"/>
+                            <field name="x_objetivo" />
+                            <field name="x_descripcion"/>
+                            <field name="x_audiencia" widget="many2many_tags"/>
+                            <field name="x_tipo_de_evento" string="Tipo de evento"/>
+                            <field name="x_colaboradores_adicionales" attrs="{'invisible': [['x_tipo_de_evento','!=','Abierto para colaboradores']]}"/>
+
+                        </group>
+                        <group name="studio_group_9StUL_right">
+                            <field name="x_host" string="Host"/>
+                            <field name="x_departamento" string="Departamento"/>
+                            <field name="x_organizadores" widget="many2many_tags" string="Organizadores" domain="[['is_company','=',True]]"/>
+                            <field name="x_coordinador" string="Coordinador"/>
+                            <field name="x_brigadista" string="Brigadista"/>
+                            <field name="x_quien_paga_el_evento" string="Quien paga el evento"/>
+                            <field name="x_porcentaje_que_paga_psm" string="Porcentaje que paga PSM" attrs="{'invisible': [['x_quien_paga_el_evento','!=','Ambos']]}"/>
+                            <field name="x_budget_proyectado" string="Budget proyectado"/>
+                            <field name="x_requiere_catering" string="Requiere catering"/>
+                        </group>
+                    </group>
+                </xpath>
+                <xpath expr="//field[@name='organizer_id']" position="attributes">
+                    <attribute name="attrs">{}</attribute>
+                    <attribute name="force_save">True</attribute>
+                    <attribute name='invisible'>1</attribute>
+                    <attribute name="readonly">1</attribute>
+                    <attribute name="string">Organizador</attribute>
+                </xpath>
+                <xpath expr="//field[@name='seats_min']" position="attributes">
+                    <attribute name="attrs">{}</attribute>
+                    <attribute name="force_save">True</attribute>
+                    <attribute name='invisible'>1</attribute>
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='date_tz']" position="attributes">
+                    <attribute name="attrs">{}</attribute>
+                    <attribute name="force_save">True</attribute>
+                    <attribute name='invisible'>1</attribute>
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='date_begin']" position="attributes">
+                    <attribute name="attrs">{}</attribute>
+                    <attribute name="force_save">True</attribute>
+                    <attribute name="string">Fecha del evento</attribute>
+                </xpath>
+                <xpath expr="//field[@name='address_id']" position="after">
+                    <field name="x_area" widget="many2many_tags" string="Área"/>
+                </xpath>
+                <xpath expr="//form[1]/sheet[1]/group[not(@name)][1]/group[1]/field[@name='user_id']" position="attributes">
+                    <attribute name="attrs">{}</attribute>
+                    <attribute name="force_save">True</attribute>
+                    <attribute name="string">Aprobador de solicitud</attribute>
+                </xpath>
+                <xpath expr="//form[1]/sheet[1]/group[not(@name)][1]" position="after">
+                    <group name="studio_group_Wrilf">
+                        <group name="studio_group_Wrilf_left">
+                            <field name="x_hora_de_registro" string="Hora de registro"/>
+                            <field name="x_hora_de_salida" string="Hora de salida" help="Salida máxima del lugar"/>
+                        </group>
+                        <group name="studio_group_Wrilf_right">
+                            <field name="x_duracion_del_evento" string="Duracion evento (hrs)" force_save="True" attrs="{}" readonly="1"/>
+                            <field name="x_numero_de_asistentes" string="Numero de asistentes"/>
+                        </group>
+                    </group>
+                    <group name="studio_group_0efW2">
+                        <group name="studio_group_0efW2_left" string="Montaje de mobiliario">
+                            <field name="x_distribucion"/>
+                            <field name="x_especificacion_de_distribucion" string="Especificación"/>
+                        </group>
+                        <group name="studio_group_0efW2_right" string="Maestra de ceremonias">
+                            <field name="x_servicio_de_ceremonias" string="Servicio"/>
+                            <field name="x_especificacion_de_ceremonia" string="Especificación"/>
+                        </group>
+                    </group>
+                    <group name="studio_group_Qrz0a">
+                        <group name="studio_group_Qrz0a_left" string="Audio visual">
+                            <field name="x_audio_visual" widget="many2many_tags" string="Audio visual"/>
+                            <field name="x_especificacion_audio_visual" string="Especificación"/>
+                        </group>
+                        <group name="studio_group_Qrz0a_right" string="Equipo extra">
+                            <field name="x_equipo_extra" widget="many2many_tags" string="Equipo extra"/>
+                            <field name="x_especificacion_equipo_extra" string="Especificación"/>
+                        </group>
+                    </group>
+                    <group name="studio_group_V5Hrc">
+                        <group name="studio_group_V5Hrc_left" string="Fotografía">
+                            <field name="x_servicio_fotografia" string="Servicio"/>
+                            <field name="x_especificacion_fotografia" string="Especificación"/>
+                        </group>
+                        <group name="studio_group_V5Hrc_right" string="Video">
+                            <field name="x_servicio_video" string="Servicio"/>
+                            <field name="x_especificacion_video" string="Especificación"/>
+                        </group>
+                    </group>
+                    <group name="studio_group_Bx9h9">
+                        <group name="studio_group_Bx9h9_left" string="Diseño">
+                            <field name="x_diseno" widget="many2many_tags"/>
+                            <field name="x_especificacion_diseno" string="Especificación"/>
+                        </group>
+                        <group name="studio_group_Bx9h9_right" string="Articulos Promocionales">
+                            <field name="x_articulos" widget="many2many_tags" string="Articulos"/>
+                            <field name="x_especificacion_articulos" string="Especificación"/>
+                        </group>
+                    </group>
+                    <group name="studio_group_lyySZ">
+                        <group name="studio_group_lyySZ_left" string="Catering">
+                            <field name="x_catering" widget="many2many_tags"/>
+                            <!--                                <form>-->
+                            <!--                                    <sheet string="Catering" name="studio_sheet_1e4ae2">-->
+                            <!--                                        <div class="oe_title" name="studio_div_b2a377">-->
+                            <!--                                            <h1>-->
+                            <!--                                                <field name="name" required="1"/>-->
+                            <!--                                            </h1>-->
+                            <!--                                        </div>-->
+                            <!--                                        <group name="studio_group_3b2383">-->
+                            <!--                                            <group name="studio_group_3b2383_left">-->
+                            <!--                                                <field name="product">-->
+                            <!--                                                    <tree string="Product Variants" multi_edit="1" duplicate="false" editable="bottom">-->
+                            <!--                                                        <field name="barcode" optional="hide" readonly="1"/>-->
+                            <!--                                                        <field name="name" readonly="1"/>-->
+                            <!--                                                        &lt;!&ndash;                                            <field name="x_studio_etiqueta_catering" widget="many2many_tags"/>&ndash;&gt;-->
+                            <!--                                                        <field name="product_template_attribute_value_ids" widget="many2many_tags" groups="product.group_product_variant" readonly="1"/>-->
+                            <!--                                                        <field name="company_id" groups="base.group_multi_company" optional="hide" readonly="1"/>-->
+                            <!--                                                        <field name="categ_id" optional="hide"/>-->
+                            <!--                                                        <field name="type" optional="hide" readonly="1"/>-->
+                            <!--                                                        <field name="price" invisible="not context.get('pricelist',False)"/>-->
+                            <!--                                                        <field name="uom_id" options="{'no_open': True, 'no_create': True}" groups="uom.group_uom" optional="show" readonly="1"/>-->
+                            <!--                                                        <field name="product_tmpl_id" invisible="1" readonly="1"/>-->
+                            <!--                                                        <field name="active" invisible="1"/>-->
+                            <!--                                                    </tree>-->
+                            <!--                                                </field>-->
+                            <!--                                            </group>-->
+                            <!--                                            <group name="studio_group_3b2383_right"/>-->
+                            <!--                                        </group>-->
+                            <!--                                    </sheet>-->
+                            <!--                                </form>-->
+                            <!--                                <tree string="Catering">-->
+                            <!--                                    <field name="name" modifiers="{}"/>-->
+                            <!--                                </tree>-->
+                            <!--                            </field>-->
+                            <field name="x_especificacion_catering" string="Especificación"/>
+                        </group>
+                        <group name="studio_group_gieIU_right" string="Ponentes">
+                            <field name="x_ponentes" string="Ponentes" widget="many2many_tags" domain="[['is_company','!=',True]]"/>
+                            <!--                                <tree string="Contacts">-->
+                            <!--                                    <field name="display_name" string="Name"/>-->
+                            <!--                                    <field name="function" invisible="1"/>-->
+                            <!--                                    <field name="company_id" groups="base.group_multi_company"/>-->
+                            <!--                                    <field name="city" optional="hide"/>-->
+                            <!--                                    <field name="state_id" optional="hide"/>-->
+                            <!--                                    <field name="country_id" optional="hide"/>-->
+                            <!--                                    <field name="vat" optional="hide"/>-->
+                            <!--                                    <field name="user_id" invisible="1"/>-->
+                            <!--                                    <field name='is_company' invisible="1"/>-->
+                            <!--                                    <field name="parent_id" invisible="1"/>-->
+                            <!--                                    <field name="active" invisible="1"/>-->
+                            <!--                                </tree>-->
+                            <!--                            </field>-->
+                            <field name="x_especificacion_ponente" string="Especificación"/>
+                        </group>
+                    </group>
+                    <group name="studio_group_gieIU">
+                        <group name="studio_group_gieIU_left" string="Encargados de servicio">
+                            <field name="x_encargado_de_bar" string="Encargado de Bar" domain="[['is_company','=',True]]"/>
+                            <field name="x_encargado_de_cocina" string="Encargado de cocina" domain="[['is_company','=',True]]"/>
+                            <field name="x_encargado_de_mesa" string="Encargado de Mesa" domain="[['is_company','=',True]]"/>
+                        </group>
+                        <group name="studio_group_lyySZ_right" string="Redes Sociales">
+                            <field name="x_twitter" string="Twitter" widget="url"/>
+                            <field name="x_facebook" string="Facebook" widget="url"/>
+                            <field name="x_instagram" string="Instagram" widget="url"/>
+                            <field name="x_linkedin" string="Linkedin" widget="url"/>
+                            <field name="x_texto_descriptivo" string="Texto descriptivo"/>
+                        </group>
+
+                    </group>
+                </xpath>
+            </data>
+        </field>
+        <field name="field_parent" eval="False"/>
+        <field name="groups_id" eval="[(6, 0, [])]"/>
+        <field name="inherit_id" ref="event.view_event_form"/>
+        <field name="key" eval="False"/>
+        <field name="mode">extension</field>
+        <field name="model">event.event</field>
+        <field name="name">event.event.form customization</field>
+        <field name="priority">99</field>
+        <field name="type">form</field>
+    </record>
+
+</odoo>

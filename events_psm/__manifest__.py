@@ -12,12 +12,26 @@
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/13.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
-    'category': 'Uncategorized',
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'approvals', 'mail'],
-    "data": [],
+    'depends': ['base', 'approvals'],
+    "data": [
+        "security/ir.model.access.csv",
+        "views/menu.xml",
+        "views/lineamientos.xml",
+        "views/approval_request_views.xml",
+        "views/area.xml",
+        "views/articulos_promocionales.xml",
+        "views/audiencia.xml",
+        "views/audiovisual.xml",
+        "views/catering.xml",
+        "views/diseno.xml",
+        "views/distribucion.xml",
+        "views/equipoextra.xml",
+        "views/event_views.xml",
+        "views/product_etiqueta.xml",
+    ],
     "test": [],
     'installable': True,
     'auto_install': False,

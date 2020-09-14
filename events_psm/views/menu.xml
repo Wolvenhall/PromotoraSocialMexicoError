@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="menu_event_catalogos" model="ir.ui.menu">
+        <field name="active" eval="True"/>
+        <field name="groups_id" eval="[(6, 0, [])]"/>
+        <field name="name">Catálogos</field>
+        <field name="parent_id" ref="event.event_main_menu"/>
+        <field name="sequence">19</field>
+        <field name="web_icon" eval="False"/>
+    </record>
+</odoo>

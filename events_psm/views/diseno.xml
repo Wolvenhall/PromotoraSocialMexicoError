@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="action_event_diseno" model="ir.actions.act_window">
+        <field name="name">Diseno</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">event.diseno</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Diseño
+            </p>
+        </field>
+    </record>
+    <menuitem
+            id="menu_event_diseno"
+            name="Diseño"
+            parent="menu_event_catalogos"
+            action="action_event_diseno"
+            sequence="25"/>
+</odoo>

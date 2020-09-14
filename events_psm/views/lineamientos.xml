@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="action_lineamientos" model="ir.actions.act_window">
+        <field name="binding_model_id" eval="False"/>
+        <field name="binding_type">action</field>
+        <field name="binding_view_types">list,form</field>
+        <field name="context">{}</field>
+        <field name="domain" eval="False"/>
+        <field name="filter" eval="False"/>
+        <field name="groups_id" eval="[(6, 0, [])]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Guarda tus lineamientos internos
+            </p>
+        </field>
+        <field name="limit">80</field>
+        <field name="name">Lineamientos</field>
+        <field name="res_model">approval.lineamiento</field>
+        <field name="search_view_id" eval="False"/>
+        <field name="target">current</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="usage" eval="False"/>
+        <field name="view_id" eval="False"/>
+        <field name="view_mode">tree,form,kanban</field>
+    </record>
+
+    <record id="default_form_view_lineamiento" model="ir.ui.view">
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <form>
+                <sheet string="Lineamientos">
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" required="1"/>
+                        </h1>
+                    </div>
+                    <group name="studio_group_4ccdf9">
+                        <group name="studio_group_4ccdf9_left"/>
+                        <group name="studio_group_4ccdf9_right"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+        <field name="field_parent" eval="False"/>
+        <field name="groups_id" eval="[(6, 0, [])]"/>
+        <field name="inherit_id" eval="False"/>
+        <field name="key" eval="False"/>
+        <field name="mode">primary</field>
+        <field name="model">approval.lineamiento</field>
+        <field name="name">Default form view for lineamiento</field>
+        <field name="priority">16</field>
+        <field name="type">form</field>
+    </record>
+    <record id="default_tree_view_lineamiento" model="ir.ui.view">
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <tree string="Lineamientos">
+                <field name="name" modifiers="{}"/>
+            </tree>
+        </field>
+        <field name="field_parent" eval="False"/>
+        <field name="groups_id" eval="[(6, 0, [])]"/>
+        <field name="inherit_id" eval="False"/>
+        <field name="key" eval="False"/>
+        <field name="mode">primary</field>
+        <field name="model">approval.lineamiento</field>
+        <field name="name">Default tree view for approval_lineamientos</field>
+        <field name="priority">16</field>
+        <field name="type">tree</field>
+    </record>
+    <record id="default_view_custom_pdf_viewer" model="ir.ui.view">
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <data>
+                <xpath expr="//group[@name='studio_group_4ccdf9_right']" position="replace"/>
+                <xpath expr="//group[@name='studio_group_4ccdf9_left']" position="replace">
+                    <field invisible="1" name="lineamiento"/>
+                </xpath>
+                <xpath expr="//field[@name='name']" position="attributes">
+                    <attribute name="string">Nombre del lineamiento</attribute>
+                </xpath>
+                <xpath expr="//group[@name='studio_group_4ccdf9']" position="inside">
+                    <field filename="lineamiento" name="lineamiento" widget="pdf_viewer"
+                           string="Lineamiento"/>
+                </xpath>
+            </data>
+        </field>
+        <field name="field_parent" eval="False"/>
+        <field name="groups_id" eval="[(6, 0, [])]"/>
+        <field name="inherit_id" ref="default_form_view_lineamiento"/>
+        <field name="key" eval="False"/>
+        <field name="mode">extension</field>
+        <field name="model">approval.lineamiento</field>
+        <field name="name">Default form view for lineamientos customization</field>
+        <field name="priority">99</field>
+        <field name="type">form</field>
+    </record>
+    <record id="default_kanban_view_lineamiento" model="ir.ui.view">
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <kanban string="Lineamientos">
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                            <div class="o_kanban_card_content">
+                                <field name="name" modifiers="{}"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+        <field name="field_parent" eval="False"/>
+        <field name="groups_id" eval="[(6, 0, [])]"/>
+        <field name="inherit_id" eval="False"/>
+        <field name="key" eval="False"/>
+        <field name="mode">primary</field>
+        <field name="model">approval.lineamiento</field>
+        <field name="name">Default kanban view for approval_lineamiento</field>
+        <field name="priority">16</field>
+        <field name="type">kanban</field>
+    </record>
+    <record id="default_kanban_cutome_view" model="ir.ui.view">
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <data>
+                <xpath expr="//field[@name='name']" position="after">
+                    <field display="full" name="lineamiento" widget="pdf_viewer"/>
+                </xpath>
+            </data>
+        </field>
+        <field name="field_parent" eval="False"/>
+        <field name="groups_id" eval="[(6, 0, [])]"/>
+        <field name="inherit_id" ref="default_kanban_view_lineamiento"/>
+        <field name="key" eval="False"/>
+        <field name="mode">extension</field>
+        <field name="model">approval.lineamiento</field>
+        <field name="name">Default kanban view for lineamientos customization</field>
+        <field name="priority">99</field>
+        <field name="type">kanban</field>
+    </record>
+
+   <menuitem
+            id="menu_approvals_lineamientos"
+            name="Lineamientos"
+            parent="approvals.approvals_menu_root"
+            action="action_lineamientos"
+            sequence="3"/>
+</odoo>

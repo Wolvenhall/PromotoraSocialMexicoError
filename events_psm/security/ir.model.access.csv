@@ -1,2 +1,12 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_events_psm_events_psm,events_psm.events_psm,model_events_psm_events_psm,base.group_user,1,1,1,1
+access_approval_lineamiento_base,access.approval.lineamiento,model_approval_lineamiento,base.group_user,1,0,0,0
+access_approval_lineamiento_manager,access.approval.lineamiento,model_approval_lineamiento,approvals.group_approval_manager,1,1,1,1
+access_event_articulos_promocionales,access.event.articulos.promocionales,model_event_articulos_promocionales,base.group_user,1,1,1,1
+access_event_audiovisual,access.event.audiovisual,model_event_audiovisual,base.group_user,1,1,1,1
+access_event_catering,access.approval.lineamiento,model_event_catering,base.group_user,1,1,1,1
+access_event_diseno,access.event.diseno,model_event_diseno,base.group_user,1,1,1,1
+access_event_distribucion,access.event.distribucion,model_event_distribucion,base.group_user,1,1,1,1
+access_event_equipo_extra,access.event.equipo.extra,model_event_equipo_extra,base.group_user,1,1,1,1
+access_event_audiencia,access.event.audiencia,model_event_audiencia,base.group_user,1,1,1,1
+access_event_area,access.event.area,model_event_area,base.group_user,1,1,1,1
+access_event_etiqueta_catering,access.event.etiqueta.catering,model_event_etiqueta_catering,base.group_user,1,1,1,1
