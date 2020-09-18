@@ -14,7 +14,7 @@ class ApprovalRequest(models.Model):
     def _default_lineamiento_id(self):
         return self.env['approval.lineamiento'].search([('id', '=', '1')], limit=1)
 
-    x_lineamiento = fields.Many2one('approval.lineamiento', string="Lineamiento de uso CoLab",
+    x_lineamiento = fields.Many2one('approval.lineamiento', string="Lineamiento",
                                     default=_default_lineamiento_id)
     x_estoy_de_acuerdo = fields.Selection(selection=[('si', 'Sí'), ('no', 'No'), ], string=_('¿Esta de acuerdo?'),)
 
@@ -26,8 +26,10 @@ class ApprovalRequest(models.Model):
 
     x_organizadores = fields.Many2many('res.partner', string="Organizadores")
 
-    x_inicio_del_evento = fields.Datetime(string="Inicio del evento")
-    x_fin_del_evento = fields.Datetime(string="Fin del evento")
+    x_fecha_del_evento = fields.Date(string="Fecha del evento")
+
+    x_hora_de_inicio = fields.Float(string="Hora de inicio")
+    x_hora_de_fin = fields.Float(string="Hora de fin")
 
     x_cantidad = fields.Integer(string="Cantidad")
 
@@ -52,6 +54,8 @@ class ApprovalRequest(models.Model):
     x_evento = fields.Many2one('event.event', string="Evento")
     x_evento_creado = fields.Datetime(string="Evento creado el")
 
+    x_fecha_de_solicitud = fields.Datetime(string="Fecha de solicitud")
+
     @api.onchange('x_cantidad')
     def _capacidad_maxima(self):
         if self.x_tipo_del_evento == 'presencial':
@@ -64,12 +68,12 @@ class ApprovalRequest(models.Model):
     def _borrar_datos(self):
         if self.x_tipo_del_evento == 'presencial':
             self.x_cantidad = 0
-            self.x_inicio_del_evento = False
-            self.x_fin_del_evento = False
+            self.x_hora_de_inicio = False
+            self.x_hora_de_fin = False
         elif self.x_tipo_del_evento == 'enlinea':
             self.x_cantidad = 0
-            self.x_inicio_del_evento = False
-            self.x_fin_del_evento = False
+            self.x_hora_de_inicio = False
+            self.x_hora_de_fin = False
             self.x_requiere_servicio_de_catering = 'no'
 
     @api.onchange('x_inicio_del_evento')

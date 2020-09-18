@@ -20,10 +20,12 @@
                     <attribute name="effect">{"message":"EVENTO CREADO!","fadeout":"medium"}</attribute>
                 </xpath>
                 <xpath expr="//form[1]/sheet[1]/div[2]" position="after">
-                    <group name="group_lineamientos_y_logistica" attrs="{'invisible': [['category_id','!=',9], ]}"
-                           style="color: red;">
-                        <group name="group_lineamientos" string="Lea el siguiente lineamiento">
-                            <field name="x_lineamiento" string="Lineamiento" force_save="True" attrs="{}" readonly="1"/>
+                    <group name="group_titulo_datos_de_solicitud" style="text-align: center;">
+                        <h4 style="background: #ffebeb; border-radius: 15px; color: #c10000;">LEA LOS SIGUIENTES LINEAMIENTOS PARA PODER CONTINUAR</h4>
+                    </group>
+                    <group name="group_lineamientos_y_logistica" attrs="{'invisible': [['category_id','!=',9], ]}">
+                        <group name="group_lineamientos">
+                            <field name="x_lineamiento" force_save="True" attrs="{}" readonly="1"/>
                             <field name="x_estoy_de_acuerdo" attrs="{'required': [['category_id','=',9]]}"/>
                         </group>
                         <group name="group_logistica" string="Logistica del evento" attrs="{'invisible': [['request_status','!=','approved']]}" style="color: blue;">
@@ -60,13 +62,20 @@
                         <field name="x_organizadores" widget="many2many_tags" string="Organizadores" attrs="{'required': [['category_id','=',9]]}" domain="[['is_company','=',True]]"/>
                     </group>
                     <group name="group_logistica_de_evento" attrs="{'invisible': ['|', ['category_id','!=',9], '&amp;' ,['x_estoy_de_acuerdo','!=','si']]}">
-                        <group name="fecha_de_evento" string="Fecha del evento">
+                        <group name="group_tipo_del_evento">
                             <field name="x_tipo_del_evento" string="Tipo de evento" attrs="{'required': [['category_id','=',9]]}"/>
-                            <field name="x_inicio_del_evento" string="Inicio del evento" widget="daterange" options="{'related_end_date':'x_fin_del_evento'}" attrs="{'required': [['category_id','=',9]]}"/>
-                            <field name="x_fin_del_evento" string="Fin del evento" widget="datetime" force_save="True" attrs="{}" readonly="1"/>
                         </group>
-                        <group name="group_personas_proyectadas" string="Personas proyectadas">
-                            <field name="x_cantidad" string="Cantidad" attrs="{'required': [['category_id','=',9]]}"/>
+                        <group name="group_personas_proyectadas">
+                            <field name="x_cantidad" string="Personas proyectadas" attrs="{'required': [['category_id','=',9]]}"/>
+                        </group>
+                    </group>
+                    <group name="group_logistica_de_evento" attrs="{'invisible': ['|', ['category_id','!=',9], '&amp;' ,['x_estoy_de_acuerdo','!=','si']]}">
+                        <group name="group_fecha_de_evento">
+                            <field name="x_fecha_del_evento" attrs="{'required': [['category_id','=',9]]}"/>
+                        </group>
+                        <group name="group_horario_del_evento">
+                            <field name="x_hora_de_inicio" string="Hora de inicio" widget="float_time" attrs="{'required': [['category_id','=',9]]}"/>
+                            <field name="x_hora_de_fin" string="Hora de fin" widget="float_time" attrs="{'required': [['category_id','=',9]]}"/>
                         </group>
                     </group>
                     <group name="group_encargados_de_evento" attrs="{'invisible': ['|', ['category_id','!=',9], '&amp;' ,['x_estoy_de_acuerdo','!=','si']]}">

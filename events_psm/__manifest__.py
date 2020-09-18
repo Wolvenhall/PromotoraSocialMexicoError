@@ -31,6 +31,8 @@
         "views/equipoextra.xml",
         "views/event_views.xml",
         "views/product_etiqueta.xml",
+        "views/categoria.xml",
+        "views/relacion.xml",
     ],
     "test": [],
     'installable': True,
