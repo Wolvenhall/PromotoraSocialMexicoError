@@ -13,7 +13,7 @@
     </record>
     <menuitem
             id="menu_event_relacion"
-            name="Relacion"
+            name="Relación"
             parent="menu_event_catalogos"
             action="action_event_relacion"
             sequence="23"/>

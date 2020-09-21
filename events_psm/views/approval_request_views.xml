@@ -68,8 +68,7 @@
                     <attribute name="string">Solicitante</attribute>
                 </xpath>
                 <xpath expr="//field[@name='request_owner_id']" position="after">
-                    <field name="create_date" string="Fecha de solicitud"
-                           attrs="{'invisible': [['create_date','=',False]]}"/>
+                    <field name="x_fecha_de_solicitud" string="Fecha de solicitud" readonly="1"/>
                 </xpath>
                 <xpath expr="//field[@name='category_id']" position="attributes">
                     <attribute name="attrs">{"readonly": True}</attribute>
@@ -78,6 +77,7 @@
                 </xpath>
                 <xpath expr="//field[@name='date_confirmed']" position="attributes">
                     <attribute name="attrs">{"invisible": [["date_confirmed","=",False]]}</attribute>
+                    <attribute name="string">Fecha de envío para aprobación</attribute>
                 </xpath>
                 <xpath expr="//field[@name='items']" position="before">
                     <field name="x_evento" attrs="{'invisible': [['x_evento','=',False]]}" force_save="True"

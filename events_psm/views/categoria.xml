@@ -13,7 +13,7 @@
     </record>
     <menuitem
             id="menu_event_categoria"
-            name="Categoria"
+            name="Categoría"
             parent="menu_event_catalogos"
             action="action_event_categoria"
             sequence="23"/>

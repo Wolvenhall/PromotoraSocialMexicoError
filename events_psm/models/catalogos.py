@@ -107,7 +107,6 @@ class Relacion(models.Model):
     description = fields.Text(string="Descripción")
 
     
-    
 class Lineamiento(models.Model):
     _name = "approval.lineamiento"
     _rec_name = 'name'

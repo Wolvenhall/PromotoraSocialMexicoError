@@ -1,8 +1,7 @@
 import requests
 import base64
 from odoo import models, api, _, fields
-from datetime import datetime
-from datetime import date
+from datetime import datetime, date
 from odoo.http import request
 from odoo.exceptions import AccessError, UserError, RedirectWarning, ValidationError, Warning
 from datetime import timedelta
@@ -55,7 +54,7 @@ class ApprovalRequest(models.Model):
     x_evento = fields.Many2one('event.event', string="Evento")
     x_evento_creado = fields.Datetime(string="Evento creado el")
 
-    x_fecha_de_solicitud = fields.Datetime(string="Fecha de solicitud")
+    x_fecha_de_solicitud = fields.Date(string="Fecha de solicitud", default=lambda self: fields.datetime.now())
 
     @api.onchange('x_cantidad')
     def _capacidad_maxima(self):
@@ -141,8 +140,9 @@ class ApprovalRequest(models.Model):
         else:
             IdSolicitud = self.id
             NombreDelEvento = self.x_nombre_del_evento
-            FechaInicio = self.x_fecha_del_evento
-            FechaFin = self.x_fin_del_evento
+            FechaEvento = self.x_fecha_del_evento
+            HoraInicio = self.x_hora_de_inicio
+            HoraFin = self.x_hora_de_fin
             MaximoPersonas = self.x_cantidad
             organizaciones = self.x_organizadores
             Catering = self.x_requiere_servicio_de_catering
@@ -150,11 +150,20 @@ class ApprovalRequest(models.Model):
             Coordinador = self.x_cordinador
             Brigadista = self.x_brigadista
 
-            hora_de_registro = FechaInicio - timedelta(hours=0, minutes=30)
-            hora_de_salida = FechaFin + timedelta(hours=0, minutes=30)
+            tiempo = datetime.min.time()
+            fecha = datetime.combine(FechaEvento, tiempo)
 
-            diferencia_de_fechas = hora_de_salida - hora_de_registro
-            evento_en_horas = diferencia_de_fechas.total_seconds() / 3600
+            horas_inicio, minutos_inicio = divmod(HoraInicio, 1)
+            horas_fin, minutos_fin = divmod(HoraFin, 1)
+
+            hora_inicio = timedelta(hours=horas_inicio + 5, minutes=minutos_inicio)
+            hora_fin = timedelta(hours=horas_fin + 5, minutes=minutos_fin)
+
+            hora_registro = self.x_hora_de_inicio - 0.50
+            hora_salida = self.x_hora_de_fin + 0.50
+
+            FechaInicio = fecha + hora_inicio
+            FechaFin = fecha + hora_fin
 
             if TipoDeEvento == 'En linea':
                 EsEnLinea = True
@@ -170,20 +179,21 @@ class ApprovalRequest(models.Model):
                 'name': NombreDelEvento,
                 'x_solicitud_enviada_en': 'tiempo',
                 'x_area': [(4, area.id)],
+                'x_fecha_del_evento': FechaEvento,
                 'date_begin': FechaInicio,
                 'date_end': FechaFin,
+                'x_hora_inicio_del_evento': HoraInicio,
+                'x_hora_fin_del_evento': HoraFin,
+                'x_hora_de_registro': hora_registro,
+                'x_hora_maxima_de_salida': hora_salida,
                 'seats_min': 0,
                 'seats_availability': 'limited',
                 'seats_max': MaximoPersonas,
+                'x_invitados_proyectados': MaximoPersonas,
                 'x_requiere_catering': Catering,
-                'x_hora_de_registro': hora_de_registro,
-                'x_hora_de_salida': hora_de_salida,
                 'is_online': EsEnLinea,
-                'x_duracion_del_evento': evento_en_horas,
                 'event_type_id': TipoEvento,
-                'x_organizadores': [(6, 0, organizaciones.ids)],
-                'x_coordinador': Coordinador.id,
-                'x_brigadista': Brigadista.id
+                'x_organizadores': [(6, 0, organizaciones.ids)]
             }
 
             new_event = request.env['event.event'].sudo().create(vals)

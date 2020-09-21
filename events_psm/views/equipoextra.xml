@@ -13,7 +13,7 @@
     </record>
     <menuitem
             id="menu_event_equipo_extra"
-            name="Audio visual"
+            name="Equipo extra"
             parent="menu_event_catalogos"
             action="action_event_equipo_extra"
             sequence="27"/>

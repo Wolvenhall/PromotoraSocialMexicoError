@@ -145,5 +145,5 @@
             name="Lineamientos"
             parent="approvals.approvals_menu_root"
             action="action_lineamientos"
-            sequence="3"/>
+            sequence="20"/>
 </odoo>

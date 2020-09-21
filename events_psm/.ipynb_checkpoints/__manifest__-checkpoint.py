@@ -15,7 +15,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'approvals'],
+    'depends': ['base', 'approvals', 'purchase', 'purchase_requisition'],
     "data": [
         "security/ir.model.access.csv",
         "views/menu.xml",
