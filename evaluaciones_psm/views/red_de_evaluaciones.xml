@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_hr_appraisal_form_inherit" model="ir.ui.view">
+        <field name="name">view.hr.appraisal.form.inherit</field>
+        <field name="model">hr.appraisal</field>
+        <field name="inherit_id" ref="hr_appraisal.view_hr_appraisal_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date_close']" position="after">
+                <field name="red_de_evaluacion"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!--Tree view-->
+    <record id="red_de_evaluaciones_tree_view" model="ir.ui.view">
+        <field name="name">red.de.evaluaciones.tree</field>
+        <field name="model">red.de.evaluaciones</field>
+        <field name="arch" type="xml">
+            <tree string="Red de Evaluaciones">
+                <field name="nombre"/>
+                <field name="descripcion"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--Form view-->
+    <record id="red_de_evaluaciones_form_view" model="ir.ui.view">
+        <field name="name">red.de.evaluaciones.form</field>
+        <field name="model">red.de.evaluaciones</field>
+        <field name="arch" type="xml">
+            <form string="Red de Evaluaciones">
+                <sheet>
+                    <button string="Generar Lista de Colaboradores" name="generar_lista" type="object"
+                            class="btn btn-primary o_form_button_edit" style="margin: 5px;"/>
+                    <button string="Limpiar Lista" name="limpiar_lista" type="object"
+                            class="btn btn-primary o_form_button_edit" style="margin: 5px;"/>
+                    <button string="Generar Encuestas" name="generar_encuestas" type="object"
+                            class="btn btn-primary o_form_button_edit" style="margin: 5px;"/>
+                    <group>
+                        <group>
+                            <field name="nombre"/>
+                            <field name="descripcion"/>
+                            <field name="encuesta"/>
+                            <field name="fecha_limite"/>
+                        </group>
+                        <group>
+                            <field name="jefe_directo"/>
+                            <field name="companeros"/>
+                            <field name="reportes_directos"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="colaborador" nolabel="1">
+                            <tree open="false">
+                                <field name="colaborador"/>
+                            </tree>
+                        </field>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!--Action asociada menu-->
+    <record id="action_red_de_evaluaciones" model="ir.actions.act_window">
+        <field name="name">Red de Evaluaciones</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">red.de.evaluaciones</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crea tu primer Red de Evaluaciones
+            </p>
+        </field>
+    </record>
+
+    <menuitem
+            id="evaluaciones_root"
+            name="Red de Evaluaciones"
+            web_icon="evaluaciones_psm,static/description/icon.png"
+            sequence="0"/>
+
+    <menuitem
+            id="menu_red_de_evaluaciones"
+            name="Red de Evaluaciones"
+            parent="evaluaciones_root"
+            action="action_red_de_evaluaciones"
+    />
+
+    <!--    <menuitem-->
+    <!--            id="evaluaciones_cedula_asociada"-->
+    <!--            name="Cédula Patrimonial de Asociadas"-->
+    <!--            parent="inversiones_cedula"-->
+    <!--            action="action_cedula_asociada"-->
+    <!--    />-->
+</odoo>

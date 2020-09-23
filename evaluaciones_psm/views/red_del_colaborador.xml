@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!--Tree view-->
+    <record id="red_del_colaborador_tree_view" model="ir.ui.view">
+        <field name="name">red.del.colaborador.tree</field>
+        <field name="model">red.del.colaborador</field>
+        <field name="arch" type="xml">
+            <tree string="Red del Colaborador">
+                <field name="red_de_evaluacion"/>
+                <field name="colaborador"/>
+                <field name="colaboradores_a_evaluar"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--Form view-->
+    <record id="red_del_colaborador_form_view" model="ir.ui.view">
+        <field name="name">red.del.colaborador.form</field>
+        <field name="model">red.del.colaborador</field>
+        <field name="arch" type="xml">
+            <form string="Red del Colaborador">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="red_de_evaluacion"/>
+                            <field name="colaborador"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="colaboradores_a_evaluar" nolabel="1">
+                            <tree>
+                                <field name="name"/>
+                                <field name="department_id"/>
+                                <field name="parent_id"/>
+                            </tree>
+                        </field>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!--Action asociada menu-->
+    <record id="action_red_del_colaborador" model="ir.actions.act_window">
+        <field name="name">Red del Colaborador</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">red.del.colaborador</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crea tu primer Red del Colaborador
+            </p>
+        </field>
+    </record>
+
+    <menuitem
+            id="evaluaciones_red_del_colaborador"
+            name="Red del Colaborador"
+            parent="evaluaciones_root"
+            action="action_red_del_colaborador"
+    />
+
+    <!--    <menuitem-->
+    <!--            id="evaluaciones_cedula_asociada"-->
+    <!--            name="Cédula Patrimonial de Asociadas"-->
+    <!--            parent="inversiones_cedula"-->
+    <!--            action="action_cedula_asociada"-->
+    <!--    />-->
+</odoo>
