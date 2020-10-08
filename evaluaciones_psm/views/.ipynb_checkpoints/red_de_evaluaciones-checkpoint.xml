@@ -1,45 +1,65 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-    <record id="view_hr_appraisal_form_inherit" model="ir.ui.view">
-        <field name="name">view.hr.appraisal.form.inherit</field>
-        <field name="model">hr.appraisal</field>
-        <field name="inherit_id" ref="hr_appraisal.view_hr_appraisal_form"/>
+
+    <record id="view_survey_user_input_form_inherit" model="ir.ui.view">
+        <field name="name">view.survey.user_input.form.inherit</field>
+        <field name="model">survey.user_input</field>
+        <field name="inherit_id" ref="survey.survey_user_input_view_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='date_close']" position="after">
-                <field name="red_de_evaluacion"/>
+            <xpath expr="//field[@name='test_entry']" position="after">
+                <field name="evaluado"/>
+                <field name="evaluador"/>
             </xpath>
-            <xpath expr="//field[@name='employee_id']" position="attributes">
+        </field>
+    </record>
+
+    <record id="view_survey_user_input_tree_inherit" model="ir.ui.view">
+        <field name="name">view.survey.user_input.tree.inherit</field>
+        <field name="model">survey.user_input</field>
+        <field name="inherit_id" ref="survey.survey_user_input_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='survey_id']" position="attributes">
                 <attribute name="attrs">{}</attribute>
-                <attribute name="string">A evaluar</attribute>
+                <attribute name="string">Encuesta</attribute>
             </xpath>
-            <xpath expr="//field[@name='manager_ids']" position="attributes">
+            <xpath expr="//field[@name='create_date']" position="attributes">
                 <attribute name="attrs">{}</attribute>
-                <attribute name="string">Jefes</attribute>
+                <attribute name="invisible">1</attribute>
             </xpath>
-            <xpath expr="//field[@name='collaborators_ids']" position="attributes">
+            <xpath expr="//field[@name='partner_id']" position="attributes">
                 <attribute name="attrs">{}</attribute>
-                <attribute name="string">Reportes Directos</attribute>
+                <attribute name="string">Contacto</attribute>
             </xpath>
-            <xpath expr="//field[@name='colleagues_ids']" position="attributes">
+            <xpath expr="//field[@name='input_type']" position="attributes">
                 <attribute name="attrs">{}</attribute>
-                <attribute name="string">Pares y CI</attribute>
+                <attribute name="invisible">1</attribute>
             </xpath>
-            
-            <xpath expr="//field[@name='employee_body_html']" position="attributes">
+            <xpath expr="//field[@name='attempt_number']" position="attributes">
                 <attribute name="attrs">{}</attribute>
-                <attribute name="string">Al Colaborador</attribute>
+                <attribute name="invisible">1</attribute>
             </xpath>
-            <xpath expr="//field[@name='manager_body_html']" position="attributes">
+            <xpath expr="//field[@name='quizz_passed']" position="attributes">
                 <attribute name="attrs">{}</attribute>
-                <attribute name="string">Al Jefe</attribute>
+                <attribute name="invisible">1</attribute>
             </xpath>
-            <xpath expr="//field[@name='colleagues_body_html']" position="attributes">
+            <xpath expr="//field[@name='quizz_score']" position="attributes">
                 <attribute name="attrs">{}</attribute>
-                <attribute name="string">A los Pares y CI</attribute>
+                <attribute name="invisible">1</attribute>
             </xpath>
-            <xpath expr="//field[@name='collaborators_body_html']" position="attributes">
+            <xpath expr="//field[@name='partner_id']" position="attributes">
                 <attribute name="attrs">{}</attribute>
-                <attribute name="string">A Reportes Directos</attribute>
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='deadline']" position="after">
+                <field name="evaluado"/>
+            </xpath>
+            <xpath expr="//field[@name='deadline']" position="after">
+                <field name="evaluador"/>
+            </xpath>
+            <xpath expr="//tree" position="attributes">
+                <attribute name="decoration-danger">state == 'new'</attribute>
+                <attribute name="decoration-bf">state == 'skip'</attribute>
+                <attribute name="decoration-success">state == 'done'</attribute>
             </xpath>
         </field>
     </record>
@@ -64,58 +84,47 @@
         <field name="model">red.de.evaluaciones</field>
         <field name="arch" type="xml">
             <form string="Red de Evaluaciones">
+                <header>
+                    <button string="Generar Red" name="generar_lista" type="object" class="btn-primary" style="float: left;" attrs="{'invisible': [('x_conteo_colaboradores','>','0')]}"/>
+                    <button string="Eliminar Red" name="eliminar_colaboradores" type="object" class="btn-danger" style="float: left;" attrs="{'invisible': [('x_conteo_colaboradores','==', 0)]}" invisible="1"/>
+                    <button string="Generar Encuestas" name="generar_encuestas" type="object" class="btn-primary" style="float: left;" attrs="{'invisible': [('x_conteo_colaboradores','==', 0), ('x_conteo_encuestas','==', 0)]}"/>
+                    <button string="Eliminar Encuestas" name="eliminar_encuestas" type="object" class="btn-danger" style="float: left;" attrs="{'invisible': [('x_conteo_encuestas','==', 0)]}" invisible="1"/>
+                    <button string="Enviar Encuestas" name="enviar_encuestas" type="object" class="btn-primary" style="float: left;" attrs="{'invisible': [('x_conteo_encuestas','==', 0)]}" invisible="1"/>
+                </header>
                 <sheet>
-                    <div class="oe_button_box">                        
-                        <button string="Generar Red" name="generar_lista" type="object"
-                                class="btn btn-primary o_form_button_edit" style="margin: 5px; float: left;" attrs="{'invisible': [['x_conteo_colaboradores','>','0']]}"/>
-                        <button string="Limpiar Red" name="limpiar_lista" type="object"
-                                class="btn btn-primary o_form_button_edit" style="margin: 5px; float: left;" attrs="{'invisible': [['x_conteo_colaboradores','=','0']]}"/>
-                        <button string="Generar Encuestas" name="generar_encuestas" type="object"
-                                class="btn btn-primary o_form_button_edit" style="margin: 5px; float: left;" attrs="{'invisible': [['x_conteo_colaboradores','=','0']]}"/>
-                        <button name="muestra_colaboradores" class="oe_stat_button" icon="fa-tag" type="object">
+                    <div class="oe_button_box">
+                        <button name="muestra_colaboradores" class="oe_stat_button" icon="fa-users" type="object">
                             <field name="x_conteo_colaboradores" widget="statinfo"/>
                         </button>
-                        <button name="muestra_evaluaciones" class="oe_stat_button" icon="fa-tag" type="object">
-                            <field name="x_conteo_evaluaciones" widget="statinfo"/>
+                        <button name="muestra_encuestas" class="oe_stat_button" icon="fa-book" type="object">
+                            <field name="x_conteo_encuestas" widget="statinfo"/>
                         </button>
-                    </div> 
-                    <group style="text-align: center;">
-                        <h2 style="margin: 10px 0 0 0;">
+                    </div>
+                    <group>
+                        <group string="Datos de la Evaluación">
                             <field name="nombre" placeholder="Nombre de la red"/>
-                        </h2>
+                            <field name="descripcion" placeholder="Breve descripción de la red"/>
+                            <field name="fecha_inicio"/>
+                            <field name="fecha_limite"/>
+                        </group>
+                        <group string="Encuestas">
+                            <field name="autoevaluacion"/>
+                            <field name="autoevaluacion_lider"/>
+                            <field name="jefe_directo"/>
+                            <field name="reportes_directos"/>
+                            <field name="cliente_interno"/>
+                            <field name="pares"/>
+                        </group>
                     </group>
                     <group style="text-align: center;">
-                        <h4>
-                            <field name="descripcion" placeholder="Breve descripción de la red"/>
+                        <h4 style="margin-top: 25px; background: #f4f4f4; border-radius: 15px;">PLANTILLA CORREO
+                            ELÉCTRONICO
                         </h4>
                     </group>
-                    <group style="text-align: center;">
-                        <h4 style="background: #f4f4f4; border-radius: 15px;">ENCUESTAS</h4>
-                    </group>
                     <group>
-                        <group>                            
-                            <field name="autoevaluacion"/>
-                            <field name="autoevaluacion_liderazgo"/>                                          
-                        </group>
-                        <group>                            
-                            <field name="general"/>
-                            <field name="liderazgo"/>              
-                        </group>
+                        <field name="evaluacion_body_html" nolabel="1"/>
                     </group>
-                    <group style="text-align: center;">
-                        <h4 style="background: #f4f4f4; border-radius: 15px;">CONFIGURACIONES</h4>
-                    </group>
-                    <group>
-                        <group>   
-                            <field name="fecha_inicio"/>
-                            <field name="fecha_limite"/>                            
-                        </group>
-                        <group>                            
-                            <field name="jefe_directo"/>
-                            <field name="companeros"/>
-                            <field name="reportes_directos"/>
-                        </group>
-                    </group>                    
+
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids" widget="mail_followers"/>
@@ -141,7 +150,7 @@
     <menuitem
             id="menu_red_de_evaluaciones"
             name="Red de Evaluaciones"
-            parent="hr_appraisal.menu_hr_appraisal_root"
+            parent="survey.menu_surveys"
             action="action_red_de_evaluaciones"
             sequence="0"
     />

@@ -7,21 +7,35 @@ class RedDelColaborador(models.Model):
     _rec_name = 'colaborador'
     _description = "Red del Colaborador"
 
-    red_de_evaluacion = fields.Many2one('red.de.evaluaciones', string='Red de evaluación')
+    def action_draft(self):
+        for rec in self:
+            rec.state = 'draft'
+
+    def action_process(self):
+        for rec in self:
+            rec.state = 'process'
+
+    def action_done(self):
+        for rec in self:
+            rec.state = 'done'
+
+    red_de_evaluacion = fields.Many2one('red.de.evaluaciones', string='Red de evaluación', readonly=True)
     colaborador = fields.Many2one('hr.employee', string='A evaluar', readonly=True)
-    
+
     jefes = fields.Many2many('hr.employee', relation="red_jefe_rel", string='Jefe')
     reportes_directos = fields.Many2many('hr.employee', relation="red_reporte_rel", string='Reportes Directos')
     pares = fields.Many2many('hr.employee', relation="red_par_rel", string='Pares')
     clientes_internos = fields.Many2many('hr.employee', relation="red_cliente_interno_rel", string='Clientes Internos')
-    
+
     state = fields.Selection([
-        ('new', 'Nuevo'),
-        ('pending', 'En espera de aprobación'),
-        ('changes', 'Requiere cambios'),        
-        ('approval', 'Aprobado'),
-        ('rechazada', "Rechazado"),
-    ], string='Status', tracking=True, required=True, copy=False, default='new', index=True)
+        ('draft', 'Borrador'),
+        ('process', 'En proceso'),
+        ('done', 'Terminado'),
+    ], string='Estado', tracking=True, default='draft', index=True, readonly=True)
+
+
+
+
 
 
 

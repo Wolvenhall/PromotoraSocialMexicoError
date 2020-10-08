@@ -1,4 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_red_de_evaluaciones_base,access.red.de.evaluaciones,model_red_de_evaluaciones,base.group_user,1,1,1,1
 access_red_del_colaborador_base,access.red.del.colaborador,model_red_del_colaborador,base.group_user,1,1,1,1
-access_hr_appraisal_base,access.hr.appraisal,model_hr_appraisal,base.group_user,1,1,1,1

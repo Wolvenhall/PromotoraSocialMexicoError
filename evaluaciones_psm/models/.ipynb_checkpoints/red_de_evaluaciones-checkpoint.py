@@ -1,19 +1,22 @@
 import datetime
 from odoo import models, fields, api, _
+from datetime import datetime, date
+from datetime import timedelta
 
 
-class HrAppraisal(models.Model):
-    _inherit = 'hr.appraisal'
+class SurveyUserInput(models.Model):
+    _inherit = 'survey.user_input'
 
-    red_de_evaluacion = fields.Many2one('red.de.evaluaciones', string='Red de evaluación')
+    evaluado = fields.Many2one('hr.employee', relation="survey_evaluado_rel", string='Evaluado')
+    evaluador = fields.Many2one('hr.employee', relation="survey_evaluador_rel", string='Evaluador')
 
 
 class RedDeEvaluaciones(models.Model):
     _name = 'red.de.evaluaciones'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _rec_name = 'nombre'
-    _description = "Red de Evaluaciones"   
-    
+    _description = "Red de Evaluaciones"
+
     def muestra_colaboradores(self):
         return {
             'name': _('Colaboradores'),
@@ -24,43 +27,41 @@ class RedDeEvaluaciones(models.Model):
             'view_mode': 'tree,form',
             'type': 'ir.actions.act_window',
         }
-    
-    def muestra_evaluaciones(self):
-        return {
-            'name': _('Evaluaciones'),
-            'domain': [('red_de_evaluacion', '=', self.id)],
-            'view_type': 'form',
-            'res_model': 'hr.appraisal',
-            'view_id': False,
-            'view_mode': 'tree,form',
-            'type': 'ir.actions.act_window',
-        }
-    
+
     def obten_total_colaboradores(self):
         total = self.env['red.del.colaborador'].search_count([('red_de_evaluacion', '=', self.id)])
         self.x_conteo_colaboradores = total
-        
-    def obten_total_evaluaciones(self):
-        total = self.env['hr.appraisal'].search_count([('red_de_evaluacion', '=', self.id)])
-        self.x_conteo_evaluaciones = total
 
-    nombre = fields.Char('Nombre')
-    descripcion = fields.Char('Descripción')
+    def muestra_encuestas(self):
+        return {
+            'name': _('Encuestas'),
+            'domain': [('survey_id', 'in', (self.jefe_directo.id, self.reportes_directos.id, self.cliente_interno.id, self.pares.id, self.autoevaluacion_lider.id, self.autoevaluacion.id))],
+            'view_type': 'form',
+            'res_model': 'survey.user_input',
+            'view_id': False,
+            'view_mode': 'tree,form',
+            'context': {'group_by': 'state'},
+            'type': 'ir.actions.act_window',
+        }
+
+    def obten_total_encuestas(self):
+        total = self.env['survey.user_input'].search_count([('survey_id', 'in', (self.jefe_directo.id, self.reportes_directos.id, self.cliente_interno.id, self.pares.id, self.autoevaluacion_lider.id, self.autoevaluacion.id))])
+        self.x_conteo_encuestas = total
+
+    nombre = fields.Char('Nombre', required=True)
+    descripcion = fields.Text('Descripción')
     colaborador = fields.Many2many('red.del.colaborador', string="Colaborador")
-    fecha_inicio = fields.Date(sting="Fecha Inicio")
-    fecha_limite = fields.Date(sting="Fecha limite")
-
-    jefe_directo = fields.Boolean(string="Jefe Directo")
-    companeros = fields.Boolean(string="Compañeros")
-    reportes_directos = fields.Boolean(string="Reportes Directos")
-    
-    autoevaluacion = fields.Many2one('survey.survey', relation="survey_ae_rel", string='AE')
-    autoevaluacion_liderazgo = fields.Many2one('survey.survey', relation="survey_ae_liderazgo_rel", string='AE Liderazgo')
-    general = fields.Many2one('survey.survey', relation="survey_general_rel", string='Evaluación')
-    liderazgo = fields.Many2one('survey.survey', relation="survey_liderazgo_rel", string='Liderazgo')
-    
-    x_conteo_colaboradores = fields.Integer(string="Red Evaluación", compute="obten_total_colaboradores")
-    x_conteo_evaluaciones = fields.Integer(string="Evaluaciones", compute="obten_total_evaluaciones")
+    fecha_inicio = fields.Date(sting="Fecha Inicio", required=True)
+    fecha_limite = fields.Date(sting="Fecha limite", required=True)
+    autoevaluacion = fields.Many2one('survey.survey', relation="survey_autoevaluacion_rel", string='Autoevaluación', required=True)
+    autoevaluacion_lider = fields.Many2one('survey.survey', relation="survey_autoevaluacion_lider_rel", string='Autoevaluación Lider', required=True)
+    jefe_directo = fields.Many2one('survey.survey', relation="survey_jefe_rel", string='Jefe', required=True)
+    reportes_directos = fields.Many2one('survey.survey', relation="survey_reportes_rel", string='Reporte Directo', required=True)
+    cliente_interno = fields.Many2one('survey.survey', relation="survey_cliente_rel", string='Cliente Interno', required=True)
+    pares = fields.Many2one('survey.survey', relation="survey_par_rel", string='Par', required=True)
+    evaluacion_body_html = fields.Html(string="Plantilla Correo Eléctronico", required=True)
+    x_conteo_colaboradores = fields.Integer(string="Colaboradores", compute="obten_total_colaboradores")
+    x_conteo_encuestas = fields.Integer(string="Encuestas", compute="obten_total_encuestas")
 
     def generar_lista(self):
 
@@ -68,185 +69,422 @@ class RedDeEvaluaciones(models.Model):
 
         for id in colaboradores_ids:
 
-            colaborador_model = self.env['red.del.colaborador'].create({'red_de_evaluacion': self.id,
-                                                                        'colaborador': id.id
-                                                                        })
+            colaborador_model = self.env['red.del.colaborador'].create({'red_de_evaluacion': self.id, 'colaborador': id.id})
 
-            # Insertar Jefe Directo
-            if self.jefe_directo:
-                jefe_inmediato = colaborador_model.colaborador.parent_id
-                if jefe_inmediato:
-                    colaborador_model.write({'jefes': [(4, jefe_inmediato.id)]})
+            # Inserta Jefe Directo
+            jefe_inmediato = colaborador_model.colaborador.parent_id
+            if jefe_inmediato:
+                colaborador_model.write({'jefes': [(4, jefe_inmediato.id)]})
 
-            # Insertar Reportes Directos
-            if self.reportes_directos:
-                reportes_ids = self.env['hr.employee'].search([('parent_id', '=', id.id)])
-                if reportes_ids:
-                    for id in reportes_ids:
-                        colaborador_model.write({'reportes_directos': [(4, id.id)]})
+            # Inserta Reportes Directos
+            reportes_ids = self.env['hr.employee'].search([('parent_id', '=', id.id)])
+            if reportes_ids:
+                for id in reportes_ids:
+                    colaborador_model.write({'reportes_directos': [(4, id.id)]})
 
-            # Insertar Compañeros
-#             if self.companeros:
-#                 if id.department_id.id:
-#                     colegas_ids = self.env['hr.employee'].search([('department_id', '=', id.department_id.id), 
-#                                                                   ('id', '!=', colaborador_model.colaborador.parent_id.id)])
-#                     if colegas_ids:
-#                         for id in colegas_ids:
-#                             if id.id == colaborador_model.colaborador.id:
-#                                 print("noes")
-#                             else:
-#                                 colaborador_model.write({'pares': [(4, id.id)]})
-                                
             # Actualiza listado de colaboradores en Red de evaluaciones
             red_de_evaluaciones = self.env['red.de.evaluaciones'].search([('id', '=', self.id)])
             red_de_evaluaciones.write({'colaborador': [(4, colaborador_model.id)]})
 
-    def limpiar_lista(self):
+    def eliminar_colaboradores(self):
         self.env["red.del.colaborador"].search([('red_de_evaluacion', '=', self.id)]).unlink()
 
-    # def _get_employees_to_appraise(self, months):
-    #     days = int(self.env['ir.config_parameter'].sudo().get_param('hr_appraisal.appraisal_create_in_advance_days', 8))
-    #     current_date = datetime.date.today()
-    #     return self.search([
-    #         ('appraisal_date', '<=', current_date - relativedelta(months=months, days=-days)),
-    #     ])
+    def eliminar_encuestas(self):
+        self.env["survey.user_input"].search([('survey_id', 'in', (self.jefe_directo.id, self.reportes_directos.id, self.cliente_interno.id, self.pares.id, self.autoevaluacion_lider.id, self.autoevaluacion.id))]).unlink()
 
     def generar_encuestas(self):
 
+        # OBTENER LISTADO RED DE COLABORADORES
         colaboradores = self.colaborador
 
         if colaboradores:
-            for id in colaboradores:
-                
-                # OBTENER COLABORADOR
-                colaborador_model = self.env['red.del.colaborador'].search([('id', '=', id.id)])
+            for colaborador in colaboradores:
 
-                if colaborador_model:
-                    
-                    # VARIABLES
-                    company_id = colaborador_model.colaborador.company_id.id
-                    employee_id = colaborador_model.colaborador.id
-                    date_close = self.fecha_limite
-                    manager_ids = 0
-                    colleagues_ids = 0
-                    collaborators_ids = 0
-                    manager_body_html = 0
-                    colleagues_body_html = 0
-                    collaborators_body_html = 0
-                    
-                    # EMPLEADO
-                    employee_body_html = colaborador_model.colaborador.company_id.appraisal_by_employee_body_html
-                                        
-                    # JEFES                
-                    if colaborador_model.jefes:
-                        manager_ids = [(4, managers.id) for managers in colaborador_model.jefes]
-                        manager_body_html = colaborador_model.colaborador.company_id.appraisal_by_manager_body_html
-                    
-                    # REPORTES DIRECTOS
-                    if colaborador_model.reportes_directos:
-                        colleagues_ids = [(4, colleagues.id) for colleagues in colaborador_model.reportes_directos]
-                        colleagues_body_html = colaborador_model.colaborador.company_id.appraisal_by_colleagues_body_html
-                    
-                    # PARES
-                    if colaborador_model.pares:
-                        collaborators_ids = [(4, collaborators.id) for collaborators in colaborador_model.pares]
-                        collaborators_body_html = colaborador_model.colaborador.company_id.appraisal_by_collaborators_body_html
-                        
-                    # CLIENTES INTERNOS
-                    if colaborador_model.clientes_internos:
-                        clientes_ids = [(4, clientes.id) for clientes in colaborador_model.clientes_internos]         
-                        collaborators_ids = collaborators_ids + clientes_ids
-                                            
-                    # URL ACTUAL                    
-                    base_url = self.env['ir.config_parameter'].get_param('web.base.url')
-                    base_url = base_url + "/survey/start/"
-                    
-                    # ENCUESTAS      
-                    autoevaluacion = self.env['survey.survey'].search([('id', '=', self.autoevaluacion.id)])
-                    autoevaluacion_liderazgo = self.env['survey.survey'].search([('id', '=', self.autoevaluacion_liderazgo.id)])
-                    evaluacion = self.env['survey.survey'].search([('id', '=', self.general.id)])
-                    liderazgo = self.env['survey.survey'].search([('id', '=', self.liderazgo.id)])                    
-                    
-                    # LINKS
-                    link_autoevaluacion = base_url + autoevaluacion.access_token
-                    link_autoevaluacion_liderazgo = base_url + autoevaluacion_liderazgo.access_token
-                    link_evaluacion = base_url + evaluacion.access_token
-                    link_liderazgo = base_url + liderazgo.access_token
-                    
-                    # BOLEANOS
-                    manager_appraisal_boolean = False        
-                    colleague_appraisal_boolean = False  
-                    collaborator_appraisal_boolean = False  
-                    
-                    if manager_ids:
-                        manager_appraisal_boolean = True                        
-                        manager_body_html = manager_body_html.replace("[link]", link_evaluacion)
-                    else:
-                        manager_ids = []        
-                        manager_body_html = ''
-                        
-                    if colleagues_ids:
-                        colleague_appraisal_boolean = True                        
-                        colleagues_body_html = colleagues_body_html.replace("[link]", link_liderazgo)
-                        employee_body_html = employee_body_html.replace("[link]", link_autoevaluacion_liderazgo)                        
-                    else:
-                        colleagues_ids = []   
-                        colleagues_body_html = ''
-                        employee_body_html = employee_body_html.replace("[link]", link_autoevaluacion)   
-                        
-                    if collaborators_ids:
-                        collaborator_appraisal_boolean = True                        
-                        collaborators_body_html = collaborators_body_html.replace("[link]", link_evaluacion)
-                    else:
-                        collaborators_ids = []
-                        collaborators_body_html = ''
-                                                                    
-                                            
-                    appraisal_values = [{
-                                'red_de_evaluacion': self.id,
-                                'company_id': company_id,
-                                'employee_id': employee_id,
-                                'date_close': date_close,
-                            
-                                'employee_appraisal': True,
-                                'employee_body_html': employee_body_html,
-                                                                                        
-                                'manager_appraisal': manager_appraisal_boolean,
-                                'manager_ids': manager_ids,
-                                'manager_body_html': manager_body_html,
-                                
-                                'colleagues_appraisal': collaborator_appraisal_boolean,
-                                'colleagues_ids': collaborators_ids,
-                                'colleagues_body_html': collaborators_body_html,
-                                                            
-                                'collaborators_appraisal': colleague_appraisal_boolean,
-                                'collaborators_ids': colleagues_ids,
-                                'collaborators_body_html': colleagues_body_html,         
+                # OBTENER DATOS DEL COLABORADOR
+                colaborador_data = self.env['red.del.colaborador'].search([('id', '=', colaborador.id)])
+
+                if colaborador_data:
+                    fecha_limite = self.fecha_limite
+                    evaluado = colaborador_data.colaborador.id
+                    html_buttons = ""
+
+                    # JEFES
+                    if colaborador_data.jefes:
+                        for jefe in colaborador_data.jefes:
+                            evaluador = jefe.id
+                            # contacto = jefe.user_id.partner_id.id
+                            # correo_electronico = jefe.user_id.partner_id.email
+                            contacto = jefe.address_home_id.id
+                            correo_electronico = jefe.address_home_id.email
+
+                            survey_values = [{
+                                'survey_id': self.jefe_directo.id,
+                                'input_type': 'manually',
+                                'state': 'new',
+                                'partner_id': contacto,
+                                'email': correo_electronico,
+                                'deadline': fecha_limite,
+                                'evaluado': evaluado,
+                                'evaluador': evaluador,
                             }]
 
-                    appraisals = self.env['hr.appraisal'].create(appraisal_values)
+                            # GENERA ENCUESTA
+#                             survey_user_input = self.env['survey.user_input'].create(survey_values)
 
-        # body = colaboradores.company_id.appraisal_by_manager_body_html
+                            answers = self._prepare_answers(contacto, correo_electronico)
+                            for answer in answers:
+                                self._send_mail(answer)
 
-        # current_date = datetime.date.today()
-        # months = int(self.env['ir.config_parameter'].sudo().get_param('hr_appraisal.appraisal_max_period'))
-        # # Set periodic_appraisal_created for the next appraisal if the date is passed:
-        # # Create perdiodic appraisal if appraisal date is in less than a week and the appraisal for this perdiod has not been created yet:
-        # employees_to_appraise = self._get_employees_to_appraise(months)
-        # appraisal_values = [{
-        #     'company_id': colaboradores.company_id.id,
-        #     'employee_id': colaboradores.id,
-        #     'date_close': self.fecha_limite,
-        #     'manager_appraisal': colaboradores.appraisal_by_manager,
-        #     'manager_ids': [(4, manager.id) for manager in colaboradores.appraisal_manager_ids],
-        #     'manager_body_html': colaboradores.company_id.appraisal_by_manager_body_html,
-        #     'colleagues_appraisal': colaboradores.appraisal_by_colleagues,
-        #     'colleagues_ids': [(4, colleagues.id) for colleagues in colaboradores.appraisal_colleagues_ids],
-        #     'colleagues_body_html': colaboradores.company_id.appraisal_by_colleagues_body_html,
-        #     'employee_appraisal': colaboradores.appraisal_self,
-        #     'employee_body_html': colaboradores.company_id.appraisal_by_employee_body_html,
-        #     'collaborators_appraisal': colaboradores.appraisal_by_collaborators,
-        #     'collaborators_ids': [(4, subordinates.id) for subordinates in colaboradores.appraisal_collaborators_ids],
-        #     'collaborators_body_html': colaboradores.company_id.appraisal_by_collaborators_body_html,
-        # } for colaboradores in employees_to_appraise]
-        # appraisals = self.env['hr.appraisal'].create(appraisal_values)
+                    # REPORTES DIRECTOS
+                    if colaborador_data.reportes_directos:
+                        for reporte_directo in colaborador_data.reportes_directos:
+                            evaluador = reporte_directo.id
+                            # contacto = jefe.user_id.partner_id.id
+                            # correo_electronico = jefe.user_id.partner_id.email
+                            contacto = reporte_directo.address_home_id.id
+                            correo_electronico = reporte_directo.address_home_id.email
+
+                            survey_values = [{
+                                'survey_id': self.reportes_directos.id,
+                                'input_type': 'manually',
+                                'state': 'new',
+                                # 'test_entry': 'false',
+                                'partner_id': contacto,
+                                'email': correo_electronico,
+                                'deadline': fecha_limite,
+                                'evaluado': evaluado,
+                                'evaluador': evaluador,
+                            }]
+                            
+                            answers = self._prepare_answers(contacto, correo_electronico)
+                            for answer in answers:
+                                self._send_mail(answer)
+
+                            # GENERA ENCUESTA
+#                             survey_user_input = self.env['survey.user_input'].create(survey_values)
+
+                        # AUTOEVALUACIÓN
+                        evaluador = evaluado
+                        # contacto = jefe.user_id.partner_id.id
+                        # correo_electronico = jefe.user_id.partner_id.email
+                        contacto = colaborador_data.colaborador.address_home_id.id
+                        correo_electronico = colaborador_data.colaborador.address_home_id.email
+                        survey_values = [{
+                            'survey_id': self.autoevaluacion_lider.id,
+                            'input_type': 'manually',
+                            'state': 'new',
+                            # 'test_entry': 'false',
+                            'partner_id': contacto,
+                            'email': correo_electronico,
+                            'deadline': fecha_limite,
+                            'evaluado': evaluado,
+                            'evaluador': evaluado,
+                        }]
+                        
+                        answers = self._prepare_answers(contacto, correo_electronico)
+                            for answer in answers:
+                                self._send_mail(answer)
+
+                        # GENERA ENCUESTA
+                        # survey_user_input = self.env['survey.user_input'].create(survey_values)
+
+                    else:
+
+                        # AUTOEVALUACIÓN
+                        evaluador = evaluado
+                        # contacto = jefe.user_id.partner_id.id
+                        # correo_electronico = jefe.user_id.partner_id.email
+                        contacto = colaborador_data.colaborador.address_home_id.id
+                        correo_electronico = colaborador_data.colaborador.address_home_id.email
+                        survey_values = [{
+                            'survey_id': self.autoevaluacion.id,
+                            'input_type': 'manually',
+                            'state': 'new',
+                            # 'test_entry': 'false',
+                            'partner_id': contacto,
+                            'email': correo_electronico,
+                            'deadline': fecha_limite,
+                            'evaluado': evaluado,
+                            'evaluador': evaluado,
+                        }]
+                        
+                        answers = self._prepare_answers(contacto, correo_electronico)
+                            for answer in answers:
+                                self._send_mail(answer)
+
+                        # GENERA ENCUESTA
+                        # survey_user_input = self.env['survey.user_input'].create(survey_values)
+
+                    # CLIENTE INTERNO
+                    if colaborador_data.clientes_internos:
+                        for cliente_interno in colaborador_data.clientes_internos:
+                            evaluador = cliente_interno.id
+                            # contacto = jefe.user_id.partner_id.id
+                            # correo_electronico = jefe.user_id.partner_id.email
+                            contacto = cliente_interno.address_home_id.id
+                            correo_electronico = cliente_interno.address_home_id.email
+
+                            survey_values = [{
+                                'survey_id': self.cliente_interno.id,
+                                'input_type': 'manually',
+                                'state': 'new',
+                                # 'test_entry': 'alse',
+                                'partner_id': contacto,
+                                'email': correo_electronico,
+                                'deadline': fecha_limite,
+                                'evaluado': evaluado,
+                                'evaluador': evaluador,
+                            }]
+                            
+                            answers = self._prepare_answers(contacto, correo_electronico)
+                            for answer in answers:
+                                self._send_mail(answer)
+
+                            # GENERA ENCUESTA
+                            # survey_user_input = self.env['survey.user_input'].create(survey_values)
+
+                    # PARES
+                    if colaborador_data.pares:
+                        for pares in colaborador_data.pares:
+                            evaluador = pares.id
+                            # contacto = jefe.user_id.partner_id.id
+                            # correo_electronico = jefe.user_id.partner_id.email
+                            contacto = pares.address_home_id.id
+                            correo_electronico = pares.address_home_id.email
+
+                            survey_values = [{
+                                'survey_id': self.cliente_interno.id,
+                                'input_type': 'manually',
+                                'state': 'new',
+                                # 'test_entry': 'false',
+                                'partner_id': contacto,
+                                'email': correo_electronico,
+                                'deadline': fecha_limite,
+                                'evaluado': evaluado,
+                                'evaluador': evaluador,
+                            }]
+                            
+                            answers = self._prepare_answers(contacto, correo_electronico)
+                            for answer in answers:
+                                self._send_mail(answer)
+
+                            # GENERA ENCUESTA
+                            # survey_user_input = self.env['survey.user_input'].create(survey_values)
+
+    # def generar_actividad(self):
+    #     self.env['mail.activity'].create({
+    #         'res_id': 1,
+    #         'res_model_id': self.env['ir.model']._get('hr.employee').id,
+    #         'summary': 'Evaluación',
+    #         'note': 'Nota Evaluación',
+    #         'activity_type_id': 4,
+    #         'user_id': 2,
+    #         'date_deadline': date.today(),
+    #     })
+
+    def enviar_encuestas(self):
+        colaboradores = self.env['red.del.colaborador'].search([('red_de_evaluacion', '=', self.id)])
+        if colaboradores:
+            for colaborador in colaboradores:
+
+                encuesta_jefe_directo = self.jefe_directo.id
+                encuesta_reportes_directos = self.reportes_directos.id
+                encuesta_cliente_interno = self.cliente_interno.id
+                encuesta_pares = self.pares.id
+                encuesta_autoevaluacion_lider = self.autoevaluacion_lider.id
+                encuesta_autoevaluacion = self.autoevaluacion.id
+                encuestas = self.env["survey.user_input"].search([('evaluador', '=', colaborador.colaborador.id),
+                                                                  ('survey_id', 'in', (encuesta_jefe_directo,
+                                                                                       encuesta_reportes_directos,
+                                                                                       encuesta_cliente_interno,
+                                                                                       encuesta_pares,
+                                                                                       encuesta_autoevaluacion_lider,
+                                                                                       encuesta_autoevaluacion))])
+
+                if encuestas:
+                    html_buttons = ""
+                    boton_plantilla = "<div style=' margin:16px 0px 16px 0px'>" \
+                                      "<a href='[link]' style='color:#fff; " \
+                                      "background-color:#875A7B; " \
+                                      "padding:8px 16px 8px 16px; " \
+                                      "text-decoration:none; " \
+                                      "border-radius:5px; " \
+                                      "font-size:13px'>[evaluado]</a></div>"
+
+                    # URL ACTUAL
+                    base_url = self.env['ir.config_parameter'].get_param('web.base.url')
+                    base_url = base_url + "/survey/start/"
+
+                    for encuesta in encuestas:
+                        # LINKS
+                        boton = ""
+                        texto_boton = ""
+                        link = base_url + encuesta.survey_id.access_token + "?answer_token=" + encuesta.token
+
+                        if encuesta.evaluado.id == encuesta.evaluador.id:
+                            texto_boton = "Autoevaluación "
+                        else:
+                            texto_boton = "Evaluación de "
+
+                        nombre_evaluado = encuesta.evaluado.name
+                        boton = boton_plantilla + boton
+                        boton = boton.replace("[link]", link)
+                        boton = boton.replace("[evaluado]", texto_boton + nombre_evaluado)
+
+                        html_buttons = html_buttons + boton
+
+                        # GENERAR ACTIVIDADES
+                        self.env['mail.activity'].create({
+                            'res_id': colaborador.colaborador.id,
+                            'res_model_id': self.env['ir.model']._get('hr.employee').id,
+                            'summary': colaboradores.red_de_evaluacion.nombre,
+                            'note': 'El periodo limite para la evaluación es el ' + encuesta.deadline.strftime('%d/%m/%Y') + ' ' + boton,
+                            'activity_type_id': 4,
+                            'user_id': colaborador.colaborador.user_id.id,
+                            'date_deadline': date.today(),
+                        })
+
+                # PLANTILLA DE CORREO ELECTRONICO
+                subject = colaboradores.red_de_evaluacion.nombre
+                body = self.evaluacion_body_html.replace("[Botones]", html_buttons)
+                body = body.replace("[Evaluador]", colaborador.colaborador.name).replace("[FechaLimite]", self.fecha_limite.strftime('%d/%m/%Y'))
+                author_id = self.create_uid.id
+                email_from = self.create_uid.email
+                mail_values = {
+                    'email_from': colaborador.colaborador.work_email,
+                    'author_id': author_id,
+                    'model': None,
+                    'res_id': None,
+                    'subject': subject,
+                    'body_html': body,
+                    'auto_delete': True,
+                    'recipient_ids': [(4, colaborador.colaborador.user_id.partner_id.id)]
+                }
+
+                # ENVIA CORREO
+                self.env['mail.mail'].sudo().create(mail_values).send()
+
+    #-------------------------------------------------------------------------------------
+    #-------------------------------------------------------------------------------------
+    #-------------------------------------------------------------------------------------
+
+    def _prepare_answers(self, partners, emails):
+        answers = self.env['survey.user_input']
+        answers |= self._create_answer(partner=partners, check_attempts=False, **self._get_answers_values())
+        return answers
+    
+    def _get_answers_values(self):
+        return {
+            'input_type': 'link',
+            'deadline': self.fecha_limite,
+        }
+    
+    def _create_answer(self, user=False, partner=False, email=False, test_entry=False, check_attempts=True, **additional_vals):
+        """ Main entry point to get a token back or create a new one. This method
+        does check for current user access in order to explicitely validate
+        security.
+    
+          :param user: target user asking for a token; it might be void or a
+                       public user in which case an email is welcomed;
+          :param email: email of the person asking the token is no user exists;
+        """
+        self.check_access_rights('read')
+        self.check_access_rule('read')
+    
+        answers = self.env['survey.user_input']
+#         for survey in self:
+        user = self.colaborador.colaborador.user_id
+    
+        invite_token = additional_vals.pop('invite_token', False)
+        
+        answer_vals = {
+            'survey_id': 31,
+            'test_entry': test_entry,
+                # 'question_ids': [(6, 0, survey._prepare_answer_questions().ids)]
+            }
+#             if user and not user._is_public():
+#             if user:
+#                 answer_vals['partner_id'] = user.partner_id.id
+#                 answer_vals['email'] = user.email
+#             elif partner:
+#                 answer_vals['partner_id'] = partner.id
+#                 answer_vals['email'] = partner.email
+#             else:
+#                 answer_vals['email'] = email
+    
+#             answer_vals['partner_id'] = '693'
+        answer_vals.update(additional_vals)
+    
+        answer_vals['email'] = 'enrique.alfaro@psm.org.mx'
+           
+        if invite_token:  
+            answer_vals['invite_token'] = invite_token
+            answers += answers.create(answer_vals)
+            
+        return answers
+
+    def create_invite(self):
+        link = "<div style='font-size:13px; font-family:'Lucida Grande', Helvetica, Verdana, Arial, sans-serif; margin:0px; padding:0px'> " \
+               "<p style='margin:0px; font-size:13px; font-family:'Lucida Grande', Helvetica, Verdana, Arial, sans-serif; padding:0px'>" \
+               "Dear ${object.partner_id.name or 'participant'}<br><br> % if object.survey_id.certificate: You have been invited to take a new certification." \
+               " % else: We are conducting a survey and your response would be appreciated. " \
+               "% endif </p><div style='font-size:13px; font-family:'Lucida Grande', " \
+               "Helvetica, Verdana, Arial, sans-serif; margin:16px 0px 16px 0px'>" \
+               "<a href='${('%s?answer_token=%s' % (object.survey_id.public_url, object.token)) | safe}' " \
+               "style='text-decoration:none; color:#fff; background-color:#875A7B; padding:8px 16px 8px 16px; border-radius:5px; font-size:13px;'>" \
+               " % if object.survey_id.certificate: Start Certification " \
+               " % else: Start Survey % endif </a>" \
+               "</div> % if object.deadline: Please answer the survey for ${format_date(object.deadline)}.<br><br> " \
+               "% endif Thank you for your participation. <p style='margin:0px; font-size:13px; font-family:'Lucida Grande', Helvetica, Verdana, Arial, sans-serif'></p>" \
+               "</div>"
+    
+        survey_values_invite = [{
+            'subject': 'Participate to ${object.survey_id.title} survey',
+            'body': link,
+            'template_id': 26,
+            'email_from': '"Administrator" <admin@example.com>',
+            'author_id': 3,
+            'existing_mode': 'resend',
+            'survey_id': 1,
+            # 'deadline': '',
+        }]
+    
+        survey_invite = self.env['survey.invite'].create(survey_values_invite)
+                
+        def _send_mail(self, answer):
+        """ Create mail specific for recipient containing notably its access token """
+#         subject = self.env['mail.template']._render_template(self.subject, 'survey.user_input', answer.id, post_process=True)
+#         body = self.env['mail.template']._render_template(self.body, 'survey.user_input', answer.id, post_process=True)
+        # post the message
+#         mail_values = {
+#             'email_from': self.email_from,
+#             'author_id': self.author_id.id,
+#             'model': None,
+#             'res_id': None,
+#             'subject': 'subject',
+#             'body_html': 'body',
+# #             'attachment_ids': [(4, att.id) for att in self.attachment_ids],
+#             'auto_delete': True,
+#         }
+#         if answer.partner_id:
+#             mail_values['recipient_ids'] = [(4, answer.partner_id.id)]
+#         else:
+#             mail_values['email_to'] = answer.email
+    
+        # optional support of notif_layout in context
+        # notif_layout = self.env.context.get('notif_layout', self.env.context.get('custom_layout'))
+        # if notif_layout:
+            # try:
+            #     template = self.env.ref(notif_layout, raise_if_not_found=True)
+            # except ValueError:
+            #     _logger.warning('QWeb template %s not found when sending survey mails. Sending without layouting.' % (notif_layout))
+            # else:
+            #     template_ctx = {
+            #         'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name=self.survey_id.title)),
+            #         'model_description': self.env['ir.model']._get('survey.survey').display_name,
+            #         'company': self.env.company,
+            #     }
+            #     body = template.render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
+            #     mail_values['body_html'] = self.env['mail.thread']._replace_local_links(body)
+    
+#         return self.env['mail.mail'].sudo().create(mail_values)
