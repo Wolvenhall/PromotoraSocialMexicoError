@@ -67,6 +67,8 @@ class RedDeEvaluaciones(models.Model):
     def finalizar_evaluacion(self):
         for rec in self:
             rec.state = 'done'
+            rec.fecha_fin = datetime.now()
+        return self._mensaje('', 'Evaluación Finalizada')
 
     # -----------------------------------------------------------------------------------------------
     # Campos
@@ -82,8 +84,9 @@ class RedDeEvaluaciones(models.Model):
     reportes_directos = fields.Many2one('survey.survey', relation="survey_reportes_rel", string='Reporte Directo', required=True)
     cliente_interno = fields.Many2one('survey.survey', relation="survey_cliente_rel", string='Cliente Interno', required=True)
     pares = fields.Many2one('survey.survey', relation="survey_par_rel", string='Par', required=True)
-    evaluacion_body_html = fields.Html(string="Plantilla Correo Eléctronico", required=True)
+    evaluacion_body_html = fields.Html(string="Plantilla Correo Eléctronico", required=True, default='Su plantilla debe contener las siguientes etiquetas: [Evaluador] [Botones] [FechaLimite]')
     fecha_envio = fields.Datetime(sting="Fecha de Envío")
+    fecha_fin = fields.Datetime(sting="Fecha de Finalización")
 
     # Campos usados en los botones inteligentes
     x_conteo_colaboradores = fields.Integer(string="Colaboradores", compute="obten_total_colaboradores")
@@ -164,9 +167,12 @@ class RedDeEvaluaciones(models.Model):
                         self._obtiene_datos_evaluador(datos_colaborador.pares, id_evaluado, self.pares.id, self.fecha_limite)
 
                     # Autoevaluaciones
-                    encuesta_autoevaluación = datos_colaborador.jefes is True and self.autoevaluacion_lider.id or self.autoevaluacion.id
-                    if encuesta_autoevaluación:
-                        self._genera_autoevaluacion(datos_colaborador.colaborador, encuesta_autoevaluación, self.fecha_limite)
+                    if datos_colaborador.reportes_directos:
+                        encuesta_autoevaluacion = self.autoevaluacion_lider.id
+                    else:
+                        encuesta_autoevaluacion = self.autoevaluacion.id
+
+                    self._genera_autoevaluacion(datos_colaborador.colaborador, encuesta_autoevaluacion, self.fecha_limite)
 
             mensaje = "Encuestas de los colaboradores generadas satisfactoriamente"
 

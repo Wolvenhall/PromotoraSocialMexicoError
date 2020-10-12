@@ -87,9 +87,9 @@
             <form string="Red de Evaluaciones">
                 <header>
                     <button string="GENERAR RED DE COLABORADORES" name="genera_lista_de_colaboradores" type="object" class="btn-primary" style="float: left;" attrs="{'invisible': [('x_conteo_colaboradores','>','0')]}"/>
-                    <button string="GENERAR ENCUESTAS" name="genera_encuestas" type="object" class="btn-primary" style="float: left;" attrs="{'invisible': [('x_conteo_encuestas','>', 0)]}"/>
-                    <button string="ENVIAR ENCUESTAS" name="envia_encuestas" type="object" class="btn-primary" style="float: left;" states="draft"/>
-                    <button string="FINALIZAR EVALUACIÓN" name="finalizar_evaluacion" type="object" states="send" class="btn-success" style="float: left;"/>
+                    <button string="GENERAR ENCUESTAS" name="genera_encuestas" type="object" class="btn-primary" style="float: left;" state="draft" attrs="{'invisible': ['|', ['x_conteo_colaboradores','==',0], ['x_conteo_encuestas','>','0']]}" confirm="¿Desea generar las encuestas para la red de colabordores?"/>
+                    <button string="ENVIAR ENCUESTAS" name="envia_encuestas" type="object" class="btn-primary" style="float: left;" state="draft" attrs="{'invisible': ['|', ['fecha_envio','!=', False], ['x_conteo_encuestas','==',0]]}" confirm="¿Desea enviar las encuestas a sus colabordores?"/>
+                    <button string="FINALIZAR EVALUACIÓN" name="finalizar_evaluacion" type="object" states="send" class="btn-success" style="float: left;" confirm="¿Desea finalizar la evaluación?"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,send,done"/>
                 </header>
                 <sheet>
@@ -109,6 +109,7 @@
                             <field name="fecha_inicio"/>
                             <field name="fecha_limite"/>
                             <field name="fecha_envio" attrs="{'invisible': [('fecha_envio','==', False)]}"/>
+                            <field name="fecha_fin" attrs="{'invisible': [('fecha_fin','==', False)]}"/>
                         </group>
                         <group string="Encuestas">
                             <field name="autoevaluacion"/>
