@@ -6,6 +6,7 @@
 
     'description': """Evaluaciones Promotora Socia México""",
     "category": "Tools",
+    'version': '1.0',
     'author': "Wolvenhall",
     'website': "http://www.wolvenhall.com",
 

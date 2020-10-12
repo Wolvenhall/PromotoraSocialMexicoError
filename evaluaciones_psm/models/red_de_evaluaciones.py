@@ -2,9 +2,11 @@ import datetime
 from odoo import models, fields, api, _
 from datetime import datetime, date
 from datetime import timedelta
+import uuid
 
 
 class SurveyUserInput(models.Model):
+    """ Metadatos heredados para poder identificar al evaluado y evaluador de la encuesta """
     _inherit = 'survey.user_input'
 
     evaluado = fields.Many2one('hr.employee', relation="survey_evaluado_rel", string='Evaluado')
@@ -12,11 +14,15 @@ class SurveyUserInput(models.Model):
 
 
 class RedDeEvaluaciones(models.Model):
+    """ Metadatos para generar una nueva red de evaluación """
     _name = 'red.de.evaluaciones'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _rec_name = 'nombre'
     _description = "Red de Evaluaciones"
 
+    # -----------------------------------------------------------------------------------------------
+    # Boton inteligente colaborador
+    # -----------------------------------------------------------------------------------------------
     def muestra_colaboradores(self):
         return {
             'name': _('Colaboradores'),
@@ -32,22 +38,39 @@ class RedDeEvaluaciones(models.Model):
         total = self.env['red.del.colaborador'].search_count([('red_de_evaluacion', '=', self.id)])
         self.x_conteo_colaboradores = total
 
+    # -----------------------------------------------------------------------------------------------
+    # Boton inteligente de encuesta
+    # -----------------------------------------------------------------------------------------------
     def muestra_encuestas(self):
         return {
             'name': _('Encuestas'),
-            'domain': [('survey_id', 'in', (self.jefe_directo.id, self.reportes_directos.id, self.cliente_interno.id, self.pares.id, self.autoevaluacion_lider.id, self.autoevaluacion.id))],
+            'domain': [('survey_id', 'in', (
+            self.jefe_directo.id, self.reportes_directos.id, self.cliente_interno.id, self.pares.id,
+            self.autoevaluacion_lider.id, self.autoevaluacion.id))],
             'view_type': 'form',
             'res_model': 'survey.user_input',
             'view_id': False,
             'view_mode': 'tree,form',
-            'context': {'group_by': 'state'},
+            'context': {'group_by': ['state', 'evaluador']},
             'type': 'ir.actions.act_window',
         }
 
     def obten_total_encuestas(self):
-        total = self.env['survey.user_input'].search_count([('survey_id', 'in', (self.jefe_directo.id, self.reportes_directos.id, self.cliente_interno.id, self.pares.id, self.autoevaluacion_lider.id, self.autoevaluacion.id))])
+        total = self.env['survey.user_input'].search_count([('survey_id', 'in', (
+        self.jefe_directo.id, self.reportes_directos.id, self.cliente_interno.id, self.pares.id,
+        self.autoevaluacion_lider.id, self.autoevaluacion.id))])
         self.x_conteo_encuestas = total
 
+    # -----------------------------------------------------------------------------------------------
+    # Boton de finalización de evaluación
+    # -----------------------------------------------------------------------------------------------
+    def finalizar_evaluacion(self):
+        for rec in self:
+            rec.state = 'done'
+
+    # -----------------------------------------------------------------------------------------------
+    # Campos
+    # -----------------------------------------------------------------------------------------------
     nombre = fields.Char('Nombre', required=True)
     descripcion = fields.Text('Descripción')
     colaborador = fields.Many2many('red.del.colaborador', string="Colaborador")
@@ -60,231 +83,168 @@ class RedDeEvaluaciones(models.Model):
     cliente_interno = fields.Many2one('survey.survey', relation="survey_cliente_rel", string='Cliente Interno', required=True)
     pares = fields.Many2one('survey.survey', relation="survey_par_rel", string='Par', required=True)
     evaluacion_body_html = fields.Html(string="Plantilla Correo Eléctronico", required=True)
+    fecha_envio = fields.Datetime(sting="Fecha de Envío")
+
+    # Campos usados en los botones inteligentes
     x_conteo_colaboradores = fields.Integer(string="Colaboradores", compute="obten_total_colaboradores")
     x_conteo_encuestas = fields.Integer(string="Encuestas", compute="obten_total_encuestas")
 
-    def generar_lista(self):
+    # Campo para el estado de la evaluación
+    state = fields.Selection([
+        ('draft', 'Borrador'),
+        ('send', 'Enviada'),
+        ('done', 'Finalizada'),
+    ], string='Estado', tracking=True, default='draft', index=True, readonly=True)
 
-        colaboradores_ids = self.env['hr.employee'].search([('active', '=', True), ('id', '!=', 1)])
+    # -----------------------------------------------------------------------------------------------
+    # Acciones Red de colaboradores
+    # -----------------------------------------------------------------------------------------------
+    def genera_lista_de_colaboradores(self):
+        """ Acciones de este metodo:
+        1.- Obtiene listado de todos los empleados activos
+        2.- Inicia ciclo for para extraer los datos de cada empleado
+            - Crea nuevo registro del empleado en la red del colaborador
+            - Obtiene a su jefe directo y lo inserta
+            - Obtiene a sus reportes directos y los inserta
+            - Actualiza la red de evaluación con el colaborador creado
+            - Envia mensaje a la vista
+        """
 
-        for id in colaboradores_ids:
+        titulo_mensaje = ""
+        lista_empleados = self.env['hr.employee'].search([('active', '=', True), ('id', '!=', 1)])
+        if lista_empleados:
+            for id_empleado in lista_empleados:
+                colaborador_creado = self.env['red.del.colaborador'].create({'red_de_evaluacion': self.id, 'colaborador': id_empleado.id})
 
-            colaborador_model = self.env['red.del.colaborador'].create({'red_de_evaluacion': self.id, 'colaborador': id.id})
+                id_jefe = colaborador_creado.colaborador.parent_id.id
+                if id_jefe:
+                    colaborador_creado.write({'jefes': [(4, id_jefe)]})
 
-            # Inserta Jefe Directo
-            jefe_inmediato = colaborador_model.colaborador.parent_id
-            if jefe_inmediato:
-                colaborador_model.write({'jefes': [(4, jefe_inmediato.id)]})
+                lista_reportes_directos = self.env['hr.employee'].search([('parent_id', '=', id_empleado.id)])
+                if lista_reportes_directos:
+                    for reporte_directo in lista_reportes_directos:
+                        colaborador_creado.write({'reportes_directos': [(4, reporte_directo.id)]})
 
-            # Inserta Reportes Directos
-            reportes_ids = self.env['hr.employee'].search([('parent_id', '=', id.id)])
-            if reportes_ids:
-                for id in reportes_ids:
-                    colaborador_model.write({'reportes_directos': [(4, id.id)]})
+                red_de_evaluaciones = self.env['red.de.evaluaciones'].search([('id', '=', self.id)])
+                red_de_evaluaciones.write({'colaborador': [(4, colaborador_creado.id)]})
 
-            # Actualiza listado de colaboradores en Red de evaluaciones
-            red_de_evaluaciones = self.env['red.de.evaluaciones'].search([('id', '=', self.id)])
-            red_de_evaluaciones.write({'colaborador': [(4, colaborador_model.id)]})
+            mensaje = "Red del colaborador creado satisfactoriamente."
+        else:
+            titulo_mensaje = 'Restricción'
+            mensaje = 'No hay empleados activos.'
 
-    def eliminar_colaboradores(self):
-        self.env["red.del.colaborador"].search([('red_de_evaluacion', '=', self.id)]).unlink()
+        return self._mensaje(titulo_mensaje, mensaje)
 
-    def eliminar_encuestas(self):
-        self.env["survey.user_input"].search([('survey_id', 'in', (self.jefe_directo.id, self.reportes_directos.id, self.cliente_interno.id, self.pares.id, self.autoevaluacion_lider.id, self.autoevaluacion.id))]).unlink()
+    # -----------------------------------------------------------------------------------------------
+    # Acciones Generar Encuestas
+    # -----------------------------------------------------------------------------------------------
+    def genera_encuestas(self):
+        """ Acciones de este metodo:
+        1.- Obtiene listado de la red de colaboradores
+        2.- Inicia ciclo for para extraer los datos de cada colaborador
+            - Crea registro del colaborador en la encuesta (Modelo user_input)
+            - Crea invitaciones para los evaluadores (Modelo survey_invite)
+        """
+        titulo_mensaje = ""
+        lista_colaboradores = self.colaborador
+        if lista_colaboradores:
+            for colaborador in lista_colaboradores:
+                datos_colaborador = self.env['red.del.colaborador'].search([('id', '=', colaborador.id)])
+                if datos_colaborador:
+                    id_evaluado = datos_colaborador.colaborador.id
 
-    def generar_encuestas(self):
+                    # Evaluaciones
+                    if datos_colaborador.jefes:
+                        self._obtiene_datos_evaluador(datos_colaborador.jefes, id_evaluado, self.jefe_directo.id, self.fecha_limite)
+                    if datos_colaborador.reportes_directos:
+                        self._obtiene_datos_evaluador(datos_colaborador.reportes_directos, id_evaluado, self.reportes_directos.id, self.fecha_limite)
+                    if datos_colaborador.clientes_internos:
+                        self._obtiene_datos_evaluador(datos_colaborador.clientes_internos, id_evaluado, self.clientes_internos.id, self.fecha_limite)
+                    if datos_colaborador.pares:
+                        self._obtiene_datos_evaluador(datos_colaborador.pares, id_evaluado, self.pares.id, self.fecha_limite)
 
-        # OBTENER LISTADO RED DE COLABORADORES
-        colaboradores = self.colaborador
+                    # Autoevaluaciones
+                    encuesta_autoevaluación = datos_colaborador.jefes is True and self.autoevaluacion_lider.id or self.autoevaluacion.id
+                    if encuesta_autoevaluación:
+                        self._genera_autoevaluacion(datos_colaborador.colaborador, encuesta_autoevaluación, self.fecha_limite)
 
-        if colaboradores:
-            for colaborador in colaboradores:
+            mensaje = "Encuestas de los colaboradores generadas satisfactoriamente"
 
-                # OBTENER DATOS DEL COLABORADOR
-                colaborador_data = self.env['red.del.colaborador'].search([('id', '=', colaborador.id)])
+        else:
+            titulo_mensaje = 'Restricción'
+            mensaje = 'No hay colaboradores en la red.'
 
-                if colaborador_data:
-                    fecha_limite = self.fecha_limite
-                    evaluado = colaborador_data.colaborador.id
-                    html_buttons = ""
+        return self._mensaje(titulo_mensaje, mensaje)
 
-                    # JEFES
-                    if colaborador_data.jefes:
-                        for jefe in colaborador_data.jefes:
-                            evaluador = jefe.id
-                            # contacto = jefe.user_id.partner_id.id
-                            # correo_electronico = jefe.user_id.partner_id.email
-                            contacto = jefe.address_home_id.id
-                            correo_electronico = jefe.address_home_id.email
+    def _genera_autoevaluacion(self, evaluado, id_encuesta, fecha_limite):
 
-                            survey_values = [{
-                                'survey_id': self.jefe_directo.id,
-                                'input_type': 'manually',
-                                'state': 'new',
-                                'partner_id': contacto,
-                                'email': correo_electronico,
-                                'deadline': fecha_limite,
-                                'evaluado': evaluado,
-                                'evaluador': evaluador,
-                            }]
+        id_evaluado = evaluado.id
+        id_contacto = evaluado.user_id.partner_id.id
+        correo_electronico = evaluado.user_id.partner_id.email
 
-                            # GENERA ENCUESTA
-#                             survey_user_input = self.env['survey.user_input'].create(survey_values)
+        self._crea_registro_encuesta(id_encuesta,
+                                     id_contacto,
+                                     correo_electronico,
+                                     fecha_limite,
+                                     id_evaluado,
+                                     id_evaluado)
 
-                            answers = self._prepare_answers(contacto, correo_electronico)
-                            for answer in answers:
-                                self._send_mail(answer)
+    def _obtiene_datos_evaluador(self, evaluadores, id_evaluado, id_encuesta, fecha_limite):
 
-                    # REPORTES DIRECTOS
-                    if colaborador_data.reportes_directos:
-                        for reporte_directo in colaborador_data.reportes_directos:
-                            evaluador = reporte_directo.id
-                            # contacto = jefe.user_id.partner_id.id
-                            # correo_electronico = jefe.user_id.partner_id.email
-                            contacto = reporte_directo.address_home_id.id
-                            correo_electronico = reporte_directo.address_home_id.email
+        for evaluador in evaluadores:
 
-                            survey_values = [{
-                                'survey_id': self.reportes_directos.id,
-                                'input_type': 'manually',
-                                'state': 'new',
-                                # 'test_entry': 'false',
-                                'partner_id': contacto,
-                                'email': correo_electronico,
-                                'deadline': fecha_limite,
-                                'evaluado': evaluado,
-                                'evaluador': evaluador,
-                            }]
-                            
-                            answers = self._prepare_answers(contacto, correo_electronico)
-                            for answer in answers:
-                                self._send_mail(answer)
+            id_contacto = evaluador.user_id.partner_id.id
+            correo_electronico = evaluador.user_id.partner_id.email
 
-                            # GENERA ENCUESTA
-#                             survey_user_input = self.env['survey.user_input'].create(survey_values)
+            self._crea_registro_encuesta(id_encuesta,
+                                         id_contacto,
+                                         correo_electronico,
+                                         fecha_limite,
+                                         id_evaluado,
+                                         evaluador.id)
 
-                        # AUTOEVALUACIÓN
-                        evaluador = evaluado
-                        # contacto = jefe.user_id.partner_id.id
-                        # correo_electronico = jefe.user_id.partner_id.email
-                        contacto = colaborador_data.colaborador.address_home_id.id
-                        correo_electronico = colaborador_data.colaborador.address_home_id.email
-                        survey_values = [{
-                            'survey_id': self.autoevaluacion_lider.id,
-                            'input_type': 'manually',
-                            'state': 'new',
-                            # 'test_entry': 'false',
-                            'partner_id': contacto,
-                            'email': correo_electronico,
-                            'deadline': fecha_limite,
-                            'evaluado': evaluado,
-                            'evaluador': evaluado,
-                        }]
-                        
-                        answers = self._prepare_answers(contacto, correo_electronico)
-                            for answer in answers:
-                                self._send_mail(answer)
+    def _crea_registro_encuesta(self, id_encuesta, id_contacto, correo_electronico, fecha_limite, id_evaluado, id_evaluador):
 
-                        # GENERA ENCUESTA
-                        # survey_user_input = self.env['survey.user_input'].create(survey_values)
+        vals = [{
+            'survey_id': id_encuesta,
+            'input_type': 'link',
+            'state': 'new',
+            'partner_id': id_contacto,
+            'email': correo_electronico,
+            'deadline': fecha_limite,
+            'evaluado': id_evaluado,
+            'evaluador': id_evaluador,
+            'token': uuid.uuid4()
+        }]
+        survey_user_input = self.env['survey.user_input'].create(vals)
 
-                    else:
+        preguntas = self.env['survey.question'].search([('survey_id', '=', id_encuesta)])
 
-                        # AUTOEVALUACIÓN
-                        evaluador = evaluado
-                        # contacto = jefe.user_id.partner_id.id
-                        # correo_electronico = jefe.user_id.partner_id.email
-                        contacto = colaborador_data.colaborador.address_home_id.id
-                        correo_electronico = colaborador_data.colaborador.address_home_id.email
-                        survey_values = [{
-                            'survey_id': self.autoevaluacion.id,
-                            'input_type': 'manually',
-                            'state': 'new',
-                            # 'test_entry': 'false',
-                            'partner_id': contacto,
-                            'email': correo_electronico,
-                            'deadline': fecha_limite,
-                            'evaluado': evaluado,
-                            'evaluador': evaluado,
-                        }]
-                        
-                        answers = self._prepare_answers(contacto, correo_electronico)
-                            for answer in answers:
-                                self._send_mail(answer)
+        if preguntas:
+            for pregunta in preguntas:
+                self.env.cr.execute(
+                    """INSERT INTO survey_question_survey_user_input_rel (survey_user_input_id, survey_question_id) VALUES (%s, %s);""",
+                    (survey_user_input.id, pregunta.id))
 
-                        # GENERA ENCUESTA
-                        # survey_user_input = self.env['survey.user_input'].create(survey_values)
-
-                    # CLIENTE INTERNO
-                    if colaborador_data.clientes_internos:
-                        for cliente_interno in colaborador_data.clientes_internos:
-                            evaluador = cliente_interno.id
-                            # contacto = jefe.user_id.partner_id.id
-                            # correo_electronico = jefe.user_id.partner_id.email
-                            contacto = cliente_interno.address_home_id.id
-                            correo_electronico = cliente_interno.address_home_id.email
-
-                            survey_values = [{
-                                'survey_id': self.cliente_interno.id,
-                                'input_type': 'manually',
-                                'state': 'new',
-                                # 'test_entry': 'alse',
-                                'partner_id': contacto,
-                                'email': correo_electronico,
-                                'deadline': fecha_limite,
-                                'evaluado': evaluado,
-                                'evaluador': evaluador,
-                            }]
-                            
-                            answers = self._prepare_answers(contacto, correo_electronico)
-                            for answer in answers:
-                                self._send_mail(answer)
-
-                            # GENERA ENCUESTA
-                            # survey_user_input = self.env['survey.user_input'].create(survey_values)
-
-                    # PARES
-                    if colaborador_data.pares:
-                        for pares in colaborador_data.pares:
-                            evaluador = pares.id
-                            # contacto = jefe.user_id.partner_id.id
-                            # correo_electronico = jefe.user_id.partner_id.email
-                            contacto = pares.address_home_id.id
-                            correo_electronico = pares.address_home_id.email
-
-                            survey_values = [{
-                                'survey_id': self.cliente_interno.id,
-                                'input_type': 'manually',
-                                'state': 'new',
-                                # 'test_entry': 'false',
-                                'partner_id': contacto,
-                                'email': correo_electronico,
-                                'deadline': fecha_limite,
-                                'evaluado': evaluado,
-                                'evaluador': evaluador,
-                            }]
-                            
-                            answers = self._prepare_answers(contacto, correo_electronico)
-                            for answer in answers:
-                                self._send_mail(answer)
-
-                            # GENERA ENCUESTA
-                            # survey_user_input = self.env['survey.user_input'].create(survey_values)
-
-    # def generar_actividad(self):
-    #     self.env['mail.activity'].create({
-    #         'res_id': 1,
-    #         'res_model_id': self.env['ir.model']._get('hr.employee').id,
-    #         'summary': 'Evaluación',
-    #         'note': 'Nota Evaluación',
-    #         'activity_type_id': 4,
-    #         'user_id': 2,
-    #         'date_deadline': date.today(),
-    #     })
-
-    def enviar_encuestas(self):
+    # -----------------------------------------------------------------------------------------------
+    # Acciones Enviar Encuestas
+    # -----------------------------------------------------------------------------------------------
+    def envia_encuestas(self):
+        """Acciones de este metodo:
+        1.- Obtiene listado de la red de colaboradores
+        2.- Inicia ciclo for para extraer los datos de cada colaborador
+            - Obtiene encuestas del evaluador
+            - Inicia ciclo for para extraer datos de la encuesta del usuario
+                - Obtiene la URL actual
+                - Crea los botones por encuesta
+                - Genera actividades en el modulo de empleados
+                - Crea invitaciones (Modelo survey_invite)
+        3.- Envia un correo con todas las encuestas que tiene que evaluar el colaborador
+        """
+        titulo_mensaje = ""
         colaboradores = self.env['red.del.colaborador'].search([('red_de_evaluacion', '=', self.id)])
         if colaboradores:
+
             for colaborador in colaboradores:
 
                 encuesta_jefe_directo = self.jefe_directo.id
@@ -304,8 +264,7 @@ class RedDeEvaluaciones(models.Model):
                 if encuestas:
                     html_buttons = ""
                     boton_plantilla = "<div style=' margin:16px 0px 16px 0px'>" \
-                                      "<a href='[link]' style='color:#fff; " \
-                                      "background-color:#875A7B; " \
+                                      "<a href='[link]' style='color:#1800bd; " \
                                       "padding:8px 16px 8px 16px; " \
                                       "text-decoration:none; " \
                                       "border-radius:5px; " \
@@ -338,16 +297,38 @@ class RedDeEvaluaciones(models.Model):
                             'res_id': colaborador.colaborador.id,
                             'res_model_id': self.env['ir.model']._get('hr.employee').id,
                             'summary': colaboradores.red_de_evaluacion.nombre,
-                            'note': 'El periodo limite para la evaluación es el ' + encuesta.deadline.strftime('%d/%m/%Y') + ' ' + boton,
+                            'note': 'La fecha limite de la evaluación es el ' + encuesta.deadline.strftime(
+                                '%d/%m/%Y') + ' ' + boton,
                             'activity_type_id': 4,
                             'user_id': colaborador.colaborador.user_id.id,
                             'date_deadline': date.today(),
                         })
 
+                        # CREA INVITACIÓN
+                        plantilla = self.env['mail.template'].search([('name', '=', 'Survey: Invite')])
+
+                        if plantilla:
+                            survey_values_invite = [{
+                                'subject': plantilla.subject,
+                                'body': plantilla.body_html,
+                                'template_id': plantilla.id,
+                                'email_from': self.create_uid.email,
+                                'author_id': self.create_uid.id,
+                                'existing_mode': 'resend',
+                                'survey_id': encuesta.survey_id.id,
+                                'deadline': self.fecha_limite,
+                            }]
+                            invite = self.env['survey.invite'].create(survey_values_invite)
+                            self.env.cr.execute("""
+                                        INSERT INTO survey_invite_partner_ids (invite_id, partner_id) VALUES (%s, %s);
+                                        """, (invite.id, colaborador.colaborador.user_id.partner_id.id))
+
                 # PLANTILLA DE CORREO ELECTRONICO
                 subject = colaboradores.red_de_evaluacion.nombre
                 body = self.evaluacion_body_html.replace("[Botones]", html_buttons)
-                body = body.replace("[Evaluador]", colaborador.colaborador.name).replace("[FechaLimite]", self.fecha_limite.strftime('%d/%m/%Y'))
+                body = body.replace("[Evaluador]", colaborador.colaborador.name).replace("[FechaLimite]",
+                                                                                         self.fecha_limite.strftime(
+                                                                                             '%d/%m/%Y'))
                 author_id = self.create_uid.id
                 email_from = self.create_uid.email
                 mail_values = {
@@ -364,127 +345,37 @@ class RedDeEvaluaciones(models.Model):
                 # ENVIA CORREO
                 self.env['mail.mail'].sudo().create(mail_values).send()
 
-    #-------------------------------------------------------------------------------------
-    #-------------------------------------------------------------------------------------
-    #-------------------------------------------------------------------------------------
+            red_actual = self.env['red.de.evaluaciones'].search([('id', '=', self.id)])
+            red_actual.write({'fecha_envio': datetime.now(), 'state': 'send'})
+            mensaje = "Encuestas enviadas satisfactoriamente"
+        else:
+            titulo_mensaje = "Restricción"
+            mensaje = "No hay encuestas para enviar"
 
-    def _prepare_answers(self, partners, emails):
-        answers = self.env['survey.user_input']
-        answers |= self._create_answer(partner=partners, check_attempts=False, **self._get_answers_values())
-        return answers
-    
-    def _get_answers_values(self):
-        return {
-            'input_type': 'link',
-            'deadline': self.fecha_limite,
-        }
-    
-    def _create_answer(self, user=False, partner=False, email=False, test_entry=False, check_attempts=True, **additional_vals):
-        """ Main entry point to get a token back or create a new one. This method
-        does check for current user access in order to explicitely validate
-        security.
-    
-          :param user: target user asking for a token; it might be void or a
-                       public user in which case an email is welcomed;
-          :param email: email of the person asking the token is no user exists;
-        """
-        self.check_access_rights('read')
-        self.check_access_rule('read')
-    
-        answers = self.env['survey.user_input']
-#         for survey in self:
-        user = self.colaborador.colaborador.user_id
-    
-        invite_token = additional_vals.pop('invite_token', False)
-        
-        answer_vals = {
-            'survey_id': 31,
-            'test_entry': test_entry,
-                # 'question_ids': [(6, 0, survey._prepare_answer_questions().ids)]
+        return self._mensaje(titulo_mensaje, mensaje)
+
+    # -----------------------------------------------------------------------------------------------
+    # CRUD
+    # -----------------------------------------------------------------------------------------------
+
+    def _mensaje(self, titulo, mensaje):
+        if titulo:
+            return {
+                'value': {},
+                'warning': {'title': titulo,
+                            'message': mensaje}
             }
-#             if user and not user._is_public():
-#             if user:
-#                 answer_vals['partner_id'] = user.partner_id.id
-#                 answer_vals['email'] = user.email
-#             elif partner:
-#                 answer_vals['partner_id'] = partner.id
-#                 answer_vals['email'] = partner.email
-#             else:
-#                 answer_vals['email'] = email
-    
-#             answer_vals['partner_id'] = '693'
-        answer_vals.update(additional_vals)
-    
-        answer_vals['email'] = 'enrique.alfaro@psm.org.mx'
-           
-        if invite_token:  
-            answer_vals['invite_token'] = invite_token
-            answers += answers.create(answer_vals)
-            
-        return answers
+        else:
+            return {
+                'effect': {
+                    'fadeout': 'medium',
+                    'message': mensaje,
+                    'type': 'rainbow_man'
+                }
+            }
 
-    def create_invite(self):
-        link = "<div style='font-size:13px; font-family:'Lucida Grande', Helvetica, Verdana, Arial, sans-serif; margin:0px; padding:0px'> " \
-               "<p style='margin:0px; font-size:13px; font-family:'Lucida Grande', Helvetica, Verdana, Arial, sans-serif; padding:0px'>" \
-               "Dear ${object.partner_id.name or 'participant'}<br><br> % if object.survey_id.certificate: You have been invited to take a new certification." \
-               " % else: We are conducting a survey and your response would be appreciated. " \
-               "% endif </p><div style='font-size:13px; font-family:'Lucida Grande', " \
-               "Helvetica, Verdana, Arial, sans-serif; margin:16px 0px 16px 0px'>" \
-               "<a href='${('%s?answer_token=%s' % (object.survey_id.public_url, object.token)) | safe}' " \
-               "style='text-decoration:none; color:#fff; background-color:#875A7B; padding:8px 16px 8px 16px; border-radius:5px; font-size:13px;'>" \
-               " % if object.survey_id.certificate: Start Certification " \
-               " % else: Start Survey % endif </a>" \
-               "</div> % if object.deadline: Please answer the survey for ${format_date(object.deadline)}.<br><br> " \
-               "% endif Thank you for your participation. <p style='margin:0px; font-size:13px; font-family:'Lucida Grande', Helvetica, Verdana, Arial, sans-serif'></p>" \
-               "</div>"
-    
-        survey_values_invite = [{
-            'subject': 'Participate to ${object.survey_id.title} survey',
-            'body': link,
-            'template_id': 26,
-            'email_from': '"Administrator" <admin@example.com>',
-            'author_id': 3,
-            'existing_mode': 'resend',
-            'survey_id': 1,
-            # 'deadline': '',
-        }]
-    
-        survey_invite = self.env['survey.invite'].create(survey_values_invite)
-                
-        def _send_mail(self, answer):
-        """ Create mail specific for recipient containing notably its access token """
-#         subject = self.env['mail.template']._render_template(self.subject, 'survey.user_input', answer.id, post_process=True)
-#         body = self.env['mail.template']._render_template(self.body, 'survey.user_input', answer.id, post_process=True)
-        # post the message
-#         mail_values = {
-#             'email_from': self.email_from,
-#             'author_id': self.author_id.id,
-#             'model': None,
-#             'res_id': None,
-#             'subject': 'subject',
-#             'body_html': 'body',
-# #             'attachment_ids': [(4, att.id) for att in self.attachment_ids],
-#             'auto_delete': True,
-#         }
-#         if answer.partner_id:
-#             mail_values['recipient_ids'] = [(4, answer.partner_id.id)]
-#         else:
-#             mail_values['email_to'] = answer.email
-    
-        # optional support of notif_layout in context
-        # notif_layout = self.env.context.get('notif_layout', self.env.context.get('custom_layout'))
-        # if notif_layout:
-            # try:
-            #     template = self.env.ref(notif_layout, raise_if_not_found=True)
-            # except ValueError:
-            #     _logger.warning('QWeb template %s not found when sending survey mails. Sending without layouting.' % (notif_layout))
-            # else:
-            #     template_ctx = {
-            #         'message': self.env['mail.message'].sudo().new(dict(body=mail_values['body_html'], record_name=self.survey_id.title)),
-            #         'model_description': self.env['ir.model']._get('survey.survey').display_name,
-            #         'company': self.env.company,
-            #     }
-            #     body = template.render(template_ctx, engine='ir.qweb', minimal_qcontext=True)
-            #     mail_values['body_html'] = self.env['mail.thread']._replace_local_links(body)
-    
-#         return self.env['mail.mail'].sudo().create(mail_values)
+
+
+
+
+
