@@ -152,17 +152,10 @@
     </record>
 
     <menuitem
-            id="menu_red_de_evaluaciones"
-            name="Red de Evaluaciones"
-            parent="survey.menu_surveys"
+            id="root_red_de_evaluaciones"
+            name="Evaluación 360"
             action="action_red_de_evaluaciones"
-            sequence="0"
+            sequence="10"
+            web_icon="evaluaciones_psm,static/description/evaluacion.png"
     />
-
-    <!--    <menuitem-->
-    <!--            id="evaluaciones_cedula_asociada"-->
-    <!--            name="Cédula Patrimonial de Asociadas"-->
-    <!--            parent="inversiones_cedula"-->
-    <!--            action="action_cedula_asociada"-->
-    <!--    />-->
 </odoo>

@@ -182,8 +182,8 @@ class RedDeEvaluaciones(models.Model):
                         }]
                         
                         answers = self._prepare_answers(contacto, correo_electronico)
-                            for answer in answers:
-                                self._send_mail(answer)
+                        for answer in answers:
+                            self._send_mail(answer)
 
                         # GENERA ENCUESTA
                         # survey_user_input = self.env['survey.user_input'].create(survey_values)
@@ -209,8 +209,8 @@ class RedDeEvaluaciones(models.Model):
                         }]
                         
                         answers = self._prepare_answers(contacto, correo_electronico)
-                            for answer in answers:
-                                self._send_mail(answer)
+                        for answer in answers:
+                            self._send_mail(answer)
 
                         # GENERA ENCUESTA
                         # survey_user_input = self.env['survey.user_input'].create(survey_values)
@@ -451,8 +451,8 @@ class RedDeEvaluaciones(models.Model):
     
         survey_invite = self.env['survey.invite'].create(survey_values_invite)
                 
-        def _send_mail(self, answer):
-        """ Create mail specific for recipient containing notably its access token """
+        # def _send_mail(self, answer):
+        # """ Create mail specific for recipient containing notably its access token """
 #         subject = self.env['mail.template']._render_template(self.subject, 'survey.user_input', answer.id, post_process=True)
 #         body = self.env['mail.template']._render_template(self.body, 'survey.user_input', answer.id, post_process=True)
         # post the message

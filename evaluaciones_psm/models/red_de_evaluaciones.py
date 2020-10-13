@@ -162,7 +162,7 @@ class RedDeEvaluaciones(models.Model):
                     if datos_colaborador.reportes_directos:
                         self._obtiene_datos_evaluador(datos_colaborador.reportes_directos, id_evaluado, self.reportes_directos.id, self.fecha_limite)
                     if datos_colaborador.clientes_internos:
-                        self._obtiene_datos_evaluador(datos_colaborador.clientes_internos, id_evaluado, self.clientes_internos.id, self.fecha_limite)
+                        self._obtiene_datos_evaluador(datos_colaborador.clientes_internos, id_evaluado, self.cliente_interno.id, self.fecha_limite)
                     if datos_colaborador.pares:
                         self._obtiene_datos_evaluador(datos_colaborador.pares, id_evaluado, self.pares.id, self.fecha_limite)
 
@@ -309,6 +309,17 @@ class RedDeEvaluaciones(models.Model):
                             'user_id': colaborador.colaborador.user_id.id,
                             'date_deadline': date.today(),
                         })
+
+                        # ENVIAR MENSAJE
+                        #
+                        # empleado = self.env['hr.employee'].search([('id', '=', colaborador.colaborador.id)])
+                        # empleado.message_post(
+                        #     partner_ids=[colaborador.colaborador.user_id.id],
+                        #     subject= 'Evaluación 2020',
+                        #     body=boton,
+                        #     subtype_id=self.env.ref('mail.mt_comment').id,
+                        #     email_layout_xmlid='mail.mail_notification_light',
+                        # )
 
                         # CREA INVITACIÓN
                         plantilla = self.env['mail.template'].search([('name', '=', 'Survey: Invite')])
