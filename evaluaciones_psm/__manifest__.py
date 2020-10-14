@@ -5,7 +5,7 @@
     'summary': """Evaluaciones Promotora Socia México""",
 
     'description': """Evaluaciones Promotora Socia México""",
-    "category": "Human Resources",
+    "category": "Tools",
     'version': '13.1.3',
     'author': "Wolvenhall",
     'website': "http://www.wolvenhall.com",
