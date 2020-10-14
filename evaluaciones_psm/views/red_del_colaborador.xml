@@ -6,7 +6,7 @@
         <field name="name">red.del.colaborador.tree</field>
         <field name="model">red.del.colaborador</field>
         <field name="arch" type="xml">
-            <tree string="Red del Colaborador" decoration-primary="state=='process'" decoration-success="state=='done'">
+            <tree string="Mapeo del Colaborador" decoration-primary="state=='process'" decoration-success="state=='done'">
                 <field name="red_de_evaluacion" invisible="1"/>
                 <field name="colaborador"/>
                 <field name="state"/>
@@ -19,7 +19,7 @@
         <field name="name">red.del.colaborador.form</field>
         <field name="model">red.del.colaborador</field>
         <field name="arch" type="xml">
-            <form string="Red del Colaborador">
+            <form string="Mapeo del Colaborador">
                 <header>
                     <button name="action_process" type="object" string="EN PROCESO" states="draft" class="btn-primary"/>
                     <button name="action_done" type="object" string="TERMINADO" states="draft,process"
@@ -103,7 +103,7 @@
         <field name="view_mode">tree,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Crea tu primer Red del Colaborador
+                Crea tu primer registro para el Mapeo del colaborador
             </p>
         </field>
     </record>

@@ -5,17 +5,13 @@
     'summary': """Evaluaciones Promotora Socia México""",
 
     'description': """Evaluaciones Promotora Socia México""",
-    "category": "Tools",
-    'version': '1.2',
+    "category": "Human Resources",
+    'version': '13.1.3',
     'author': "Wolvenhall",
     'website': "http://www.wolvenhall.com",
+    'maintainer': "Wolvenhall",
+    'support': "Wolvenhall",
 
-    # Categories can be used to filter modules in modules listing
-    # Check https://github.com/odoo/odoo/blob/13.0/odoo/addons/base/data/ir_module_category_data.xml
-    # for the full list
-    'version': '0.1',
-
-    # any module necessary for this one to work correctly
     'depends': ['base', 'hr', 'survey'],
     "data": [
         "security/ir.model.access.csv",
@@ -25,5 +21,5 @@
     "test": [],
     'installable': True,
     'auto_install': False,
-    'application': False,
+    'application': True,
 }

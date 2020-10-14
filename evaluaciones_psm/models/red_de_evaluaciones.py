@@ -18,7 +18,7 @@ class RedDeEvaluaciones(models.Model):
     _name = 'red.de.evaluaciones'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _rec_name = 'nombre'
-    _description = "Red de Evaluaciones"
+    _description = "Mapeo de Evaluaciones"
 
     # -----------------------------------------------------------------------------------------------
     # Boton inteligente colaborador
@@ -303,8 +303,7 @@ class RedDeEvaluaciones(models.Model):
                             'res_id': colaborador.colaborador.id,
                             'res_model_id': self.env['ir.model']._get('hr.employee').id,
                             'summary': colaboradores.red_de_evaluacion.nombre,
-                            'note': 'La fecha limite de la evaluación es el ' + encuesta.deadline.strftime(
-                                '%d/%m/%Y') + ' ' + boton,
+                            'note': 'La fecha limite de la evaluación es el ' + encuesta.deadline.strftime('%d/%m/%Y') + ' ' + boton,
                             'activity_type_id': 4,
                             'user_id': colaborador.colaborador.user_id.id,
                             'date_deadline': date.today(),

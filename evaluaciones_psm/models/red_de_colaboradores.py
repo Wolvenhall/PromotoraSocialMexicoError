@@ -5,7 +5,7 @@ class RedDelColaborador(models.Model):
     _name = 'red.del.colaborador'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _rec_name = 'colaborador'
-    _description = "Red del Colaborador"
+    _description = "Mapeo del Colaborador"
 
     def action_draft(self):
         for rec in self:
@@ -20,7 +20,7 @@ class RedDelColaborador(models.Model):
             rec.state = 'done'
 
     red_de_evaluacion = fields.Many2one('red.de.evaluaciones', string='Red de evaluación', readonly=True)
-    colaborador = fields.Many2one('hr.employee', string='A evaluar', readonly=True)
+    colaborador = fields.Many2one('hr.employee', string='A evaluar')
 
     jefes = fields.Many2many('hr.employee', relation="red_jefe_rel", string='Jefe')
     reportes_directos = fields.Many2many('hr.employee', relation="red_reporte_rel", string='Reportes Directos')

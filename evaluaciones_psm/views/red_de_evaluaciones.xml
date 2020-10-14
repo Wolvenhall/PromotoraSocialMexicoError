@@ -69,7 +69,7 @@
         <field name="name">red.de.evaluaciones.tree</field>
         <field name="model">red.de.evaluaciones</field>
         <field name="arch" type="xml">
-            <tree string="Red de Evaluaciones">
+            <tree string="Mapeo de Evaluaciones">
                 <field name="nombre"/>
                 <field name="descripcion"/>
                 <field name="fecha_inicio"/>
@@ -84,7 +84,7 @@
         <field name="name">red.de.evaluaciones.form</field>
         <field name="model">red.de.evaluaciones</field>
         <field name="arch" type="xml">
-            <form string="Red de Evaluaciones">
+            <form string="Mapeo de Evaluaciones">
                 <header>
                     <button string="GENERAR RED DE COLABORADORES" name="genera_lista_de_colaboradores" type="object" class="btn-primary" style="float: left;" attrs="{'invisible': [('x_conteo_colaboradores','>','0')]}"/>
                     <button string="GENERAR ENCUESTAS" name="genera_encuestas" type="object" class="btn-primary" style="float: left;" state="draft" attrs="{'invisible': ['|', ['x_conteo_colaboradores','==',0], ['x_conteo_encuestas','>','0']]}" confirm="¿Desea generar las encuestas para la red de colabordores?"/>
