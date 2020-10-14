@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!--Tree view-->
+    <record id="credito_control_tree_view" model="ir.ui.view">
+        <field name="name">credito.control.tree</field>
+        <field name="model">inversiones.credito.linea</field>
+        <field name="arch" type="xml">
+            <tree string="Control de Créditos">
+                <field name="linea_de_credito"/>
+                <field name="sector"/>
+                <field name="devengo"/>
+                <field name="tipo"/>
+                <field name="monto_autorizado"/>
+                <field name="tasa_de_interes"/>
+                <field name="vigencia_credito_inicio"/>
+                <field name="vigencia_credito_fin"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--Form view-->
+    <record id="credito_control_form_view" model="ir.ui.view">
+        <field name="name">credito.control.form</field>
+        <field name="model">inversiones.credito.linea</field>
+        <field name="arch" type="xml">
+            <form string="Control de Créditos">
+                <sheet>
+                    <!--                    <div class="oe_button_box">-->
+                    <!--                        <button name="muestra_disposiciones" class="oe_stat_button" icon="fa-credit-card" type="object">-->
+                    <!--                            <field name="conteo_disposiciones" widget="statinfo"/>-->
+                    <!--                        </button>-->
+                    <!--                    </div>-->
+                    <group>
+                        <h1>
+                            <field name="linea_de_credito" placeholder="Línea de Crédito"/>
+                        </h1>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="contrato"/>
+                            <field name="sector"/>
+                        </group>
+                        <group>
+                            <field name="devengo"/>
+                            <field name="tipo"/>
+                            <field name="monto_autorizado"/>
+                            <field name="tasa_de_interes"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="vigencia_credito_inicio"/>
+                            <field name="vigencia_credito_fin"/>
+                            <field name="periodo_de_gracia"/>
+                            <field name="forma_de_pago"/>
+                        </group>
+                        <group>
+                            <field name="es_pago_fijo"/>
+                            <field name="monto_pago_fijo"/>
+                            <field name="tipo_de_moneda"/>
+                            <field name="estatus"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Dispocisiones">
+                            <field name="dispocisiones" widget="section_and_note_one2many">
+                                <tree>
+                                    <field name="disposicion"/>
+                                    <field name="factura"/>
+                                    <field name="fecha_de_pago"/>
+                                    <field name="ministraciones"/>
+                                    <field name="saldo_insoluto"/>
+                                    <button string="Ver Amortizaciones" name="action_view_form_disposicion" type="object" class="oe_highlight"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!--Action asociada menu-->
+    <record id="action_credito_control" model="ir.actions.act_window">
+        <field name="name">Control de Créditos</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">inversiones.credito.linea</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crea tu primer registro de Beneficiario
+            </p>
+        </field>
+    </record>
+
+</odoo>
