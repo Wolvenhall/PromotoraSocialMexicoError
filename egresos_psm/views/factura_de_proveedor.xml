@@ -6,50 +6,41 @@
         <field name="model">account.move</field>
         <field name="inherit_id" ref="account.view_move_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//page[@name='other_info']" position="after">
-                <page string="Información historica">
-                    <form>
-                        <group>
-                            <group>
-                                <field name="tipo_de_cambio"/>
-                                <field name="forma_de_pago"/>
-                                <field name="metodo_de_pago"/>
-                                <field name="partida_presupuestal"/>
-                                <field name="ejercicio_presupuestal"/>
-                            </group>
-                            <group>
-                                <field name="numero_de_cheque"/>
-                                <field name="cheque_entregado"/>
-                                <field name="poliza_entregada"/>
-                                <field name="entrega_de_poliza"/>
-                                <field name="numero_de_recibo"/>
-                                <field name="vobo_transferencias"/>
-                            </group>
-                        </group>
-                    </form>
-                </page>
+            <xpath expr="//form[1]/sheet[1]/group[not(@name)][1]" position="after">
+                <group>
+                    <h4 style="background: #f4f4f4; border-radius: 5px; padding: 3px;"/>
+                </group>
+                <group attrs="{'invisible': [('type', 'in', ('out_invoice', 'out_refund', 'out_receipt'))]}">
+                    <group>
+                        <field name="vehiculo" attrs="{'invisible': [('type', 'in', ('out_invoice', 'out_refund', 'out_receipt'))]}"/>
+                        <field name="sector" attrs="{'invisible': [('type', 'in', ('out_invoice', 'out_refund', 'out_receipt'))]}"/>
+                        <field name="subsector" attrs="{'invisible': [('type', 'in', ('out_invoice', 'out_refund', 'out_receipt'))]}"/>
+
+                        <field name="tipo_de_gasto" attrs="{'invisible': [('type', 'in', ('out_invoice', 'out_refund', 'out_receipt'))]}"/>
+                        <field name="subtipo_de_gasto" attrs="{'invisible': [('type', 'in', ('out_invoice', 'out_refund', 'out_receipt'))]}"/>
+                    </group>
+                    <group>
+                        <field name="deal_unico" attrs="{'invisible': [('type', 'in', ('out_invoice', 'out_refund', 'out_receipt'))]}"/>
+                        <field name="anticipo" attrs="{'invisible': [('type', 'in', ('out_invoice', 'out_refund', 'out_receipt'))]}"/>
+                        <field name="tipo_de_cambio" attrs="{'invisible': [('type', 'in', ('out_invoice', 'out_refund', 'out_receipt'))]}"/>
+                        <field name="forma_de_pago" attrs="{'invisible': [('type', 'in', ('out_invoice', 'out_refund', 'out_receipt'))]}"/>
+                        <field name="metodo_de_pago" attrs="{'invisible': [('type', 'in', ('out_invoice', 'out_refund', 'out_receipt'))]}"/>
+                        <field name="tipo_de_comprobante" attrs="{'invisible': [('type', 'in', ('out_invoice', 'out_refund', 'out_receipt'))]}"/>
+                        <field name="vobo_transferencias" attrs="{'invisible': [('type', 'in', ('out_invoice', 'out_refund', 'out_receipt'))]}"/>
+                        <field name="centro_de_costos" attrs="{'invisible': [('type', 'in', ('out_invoice', 'out_refund', 'out_receipt'))]}"/>
+
+                        <field name="ejercicio_presupuestal" attrs="{'invisible': [('type', 'in', ('out_invoice', 'out_refund', 'out_receipt'))]}"/>
+
+                        <field name="estatus_sincronizacion" attrs="{'invisible': [('type', 'in', ('out_invoice', 'out_refund', 'out_receipt'))]}"/>
+                        <field name="fecha_sincronizacion" attrs="{'invisible': [('type', 'in', ('out_invoice', 'out_refund', 'out_receipt'))]}"/>
+                    </group>
+                </group>
             </xpath>
-            <field name="invoice_vendor_bill_id" position="after">
-                <field name="solicitante"/>
-                <field name="direccion"/>
-                <field name="departamaneto"/>
-                <field name="oficina"/>
-                <field name="vehiculo"/>
-                <field name="sector"/>
-                <field name="subsector"/>
-                <field name="nombre_del_proyecto"/>
-                <field name="corporativo"/>
-                <field name="deal_unico"/>
-            </field>
-            <field name="currency_id" position="after">
-                <field name="anticipo"/>
-                <field name="tipo_de_comprobante"/>
-                <field name="gasto"/>
-                <field name="tipo_de_gasto"/>
-                <field name="centro_de_costos"/>
-                <field name="tipo_de_gasto"/>
-                <field name="estatus_sincronizacion"/>
-                <field name="fecha_sincronizacion"/>
+            <field name="ref" position="after">
+                <field name="solicitante" attrs="{'invisible': [('type', 'in', ('out_invoice', 'out_refund', 'out_receipt'))]}"/>
+                <field name="direccion" attrs="{'invisible': [('type', 'in', ('out_invoice', 'out_refund', 'out_receipt'))]}"/>
+                <field name="departamaneto" attrs="{'invisible': [('type', 'in', ('out_invoice', 'out_refund', 'out_receipt'))]}"/>
+                <field name="tipo_de_aprobacion" attrs="{'invisible': [('type', 'in', ('out_invoice', 'out_refund', 'out_receipt'))]}"/>
             </field>
         </field>
     </record>

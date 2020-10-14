@@ -16,7 +16,9 @@
 
     # any module necessary for this one to work correctly
     'depends': [
-        'account_accountant'],
+        'account_accountant',
+        'purchase',
+    ],
     "data": [
         "security/ir.model.access.csv",
         "views/factura_de_proveedor.xml",
@@ -24,7 +26,7 @@
         "views/subsector.xml",
         "views/proyecto.xml",
         "views/centrodecostos.xml",
-        "views/partida_de_egresos.xml"
+        "views/partida_de_egresos.xml",
     ],
     "test": [],
     'installable': True,
