@@ -1,188 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<<<<<<< HEAD
-    <record id="purchase_requisition_form_view_inherit" model="ir.ui.view">
-        <field name="active" eval="True"/>
-        <field name="arch" type="xml">
-            <data>
-                <xpath expr="//form[1]/sheet[1]/notebook[1]" position="inside">
-                    <page name="page_other_info" string="Otra información">
-                        <group>
-                            <group name="group_other_info_left">
-                                <field name="x_evento_id"/>
-                            </group>
-                            <group name="group_other_info_right"/>
-                        </group>
-                    </page>
-                </xpath>
-            </data>
-        </field>
-        <field name="field_parent" eval="False"/>
-        <field name="groups_id" eval="[(6, 0, [])]"/>
-        <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_form"/>
-        <field name="key" eval="False"/>
-        <field name="mode">extension</field>
-        <field name="model">purchase.requisition</field>
-        <field name="name">purchase.requisition.form customization</field>
-        <field name="priority">99</field>
-        <field name="type">form</field>
-    </record>
-    <record id="purchase_form_view_inherit" model="ir.ui.view">
-        <field name="active" eval="True"/>
-        <field name="arch" type="xml">
-            <data>
-                <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='purchase_delivery_invoice']/group[1]/group[@name='planning']/label[1]"
-                       position="before">
-                    <field name="x_evento_id"/>
-                </xpath>
-            </data>
-        </field>
-        <field name="field_parent" eval="False"/>
-        <field name="groups_id" eval="[(6, 0, [])]"/>
-        <field name="inherit_id" ref="purchase.purchase_order_form"/>
-        <field name="key" eval="False"/>
-        <field name="mode">extension</field>
-        <field name="model">purchase.order</field>
-        <field name="name">purchase.order.form customization</field>
-        <field name="priority">99</field>
-        <field name="type">form</field>
-    </record>
-=======
->>>>>>> production
     <record id="event_form_view_inherit" model="ir.ui.view">
         <field name="active" eval="True"/>
         <field name="arch" type="xml">
             <data>
-<<<<<<< HEAD
-                <div class="oe_button_box">
-                    <button name="muestra_compras" class="oe_stat_button" icon="fa-tag" type="object">
-                        <field name="x_conteo_compras" widget="statinfo"/>
-                    </button>
-                    <button name="muestra_licitaciones" class="oe_stat_button" icon="fa-tags" type="object">
-                        <field name="x_conteo_licitaciones" widget="statinfo"/>
-                    </button>
-                </div>
-                <xpath expr="//form[1]/sheet[1]/div[not(@name)][1]" position="after">
-                    <group name="group_titulo_datos_de_solicitud" style="text-align: center;">
-                        <h4 style="background: #f4f4f4; border-radius: 15px;">DATOS DE LA SOLICITUD</h4>
-                    </group>
-                </xpath>
-                <xpath expr="//group[@name='group_titulo_datos_de_solicitud']" position="after">
-                    <group name="group_datos_de_solicitud">
-                        <group name="group_datos_de_solicitud_left">
-                            <field name="x_solicitante"/>
-                        </group>
-                        <group name="group_datos_de_solicitud_right">
-                            <field name="x_fecha_de_solicitud"/>
-                            <field name="x_solicitud_enviada_en"/>
-                            <field name="x_solicitud_de_evento" force_save="True" attrs="{}" readonly="1"/>
-                        </group>
-                    </group>
-                    <group name="group_titulo_datos_del_evento" style="text-align: center;">
-                        <h4 style="background: #f4f4f4; border-radius: 15px;">DATOS DEL EVENTO</h4>
-                    </group>
-                    <group name="group_datos_del_evento_objetivos">
-                        <field name="x_objetivo"/>
-                        <field name="x_descripcion"/>
-                    </group>
-                    <group name="group_datos_del_evento_host">
-                        <group>
-                            <field name="x_host"/>
-                            <field name="x_departamento"/>
-                        </group>
-                        <group>
-                            <field name="x_area" widget="many2many_tags"/>
-                        </group>
-                    </group>
-                    <group name="group_datos_del_evento">
-                        <group name="group_datos_del_evento_left">
-                            <field name="x_organizadores" widget="many2many_tags" domain="[['is_company','=',True]]"/>
-                            <field name="x_relacion" widget="many2many_tags"/>
-                            <field name="x_invitados_proyectados"/>
-                        </group>
-                        <group name="group_datos_del_evento_right">
-                            <field name="x_quien_paga_el_evento"/>
-                            <field name="x_porcentaje_que_paga_psm"
-                                   attrs="{'invisible': [['x_quien_paga_el_evento','!=','Ambos']]}"/>
-                            <field name="x_budget_proyectado"/>
-                            <field name="x_requiere_catering"/>
-                        </group>
-                    </group>
-                    <group name="group_categoria_de_eventos">
-                        <group>
-                            <field name="x_tipo_de_evento"/>
-                            <field name="x_colaboradores_adicionales"
-                                   attrs="{'invisible': [['x_tipo_de_evento','!=','abierto']]}"/>
-                        </group>
-                        <group>
-                            <field name="x_categoria_de_evento" widget="many2many_tags"/>
-                            <field name="x_audiencia" widget="many2many_tags"/>
-                        </group>
-                    </group>
-                    <group style="text-align: center;">
-                        <h4 style="background: #f4f4f4; border-radius: 15px;">HORARIOS</h4>
-                    </group>
-                </xpath>
-                <xpath expr="//group[@name='group_titulo_datos_de_solicitud']" position="before">
-                    <group name="group_titulo_post_evento" style="text-align: center;"
-                           attrs="{'invisible': [['state','not in',['confirm','done']]]}">
-                        <h4 style="background: #fff2f2; border-radius: 15px; padding: 2px; color: #9a1212;">POST
-                            EVENTO
-                        </h4>
-                    </group>
-                    <group name="group_post_evento" style="color: #9a1212;"
-                           attrs="{'invisible': [['state','not in',['confirm','done']]]}">
-                        <group name="group_post_evento_left">
-                            <field name="x_incidencia"/>
-                        </group>
-                        <group name="group_post_evento_right">
-                            <field name="x_numero_de_asistentes"/>
-                            <field name="x_duracion_del_evento" force_save="True" attrs="{}" readonly="1"/>
-                        </group>
-                    </group>
-                </xpath>
-                <xpath expr="//form[1]/sheet[1]/group[not(@name)][1]" position="after">
-                    <group name="group_fecha_del_evento">
-                        <group>
-                            <field name="x_fecha_del_evento"/>
-                        </group>
-                    </group>
-                    <group name="studio_group_Wrilf">
-                        <group name="studio_group_Wrilf_left">
-                            <field name="x_hora_de_registro" widget="float_time"/>
-                            <field name="x_hora_inicio_del_evento" widget="float_time"/>
-                        </group>
-                        <group name="studio_group_Wrilf_right">
-                            <field name="x_hora_fin_del_evento" widget="float_time"/>
-                            <field name="x_hora_maxima_de_salida" widget="float_time"/>
-                        </group>
-                    </group>
-                    <group style="text-align: center;">
-                        <h4 style="background: #f4f4f4; border-radius: 15px;">RESPONSABLES</h4>
-                    </group>
-                    <group name="group_responsables_del_evento">
-                        <group name="group_coordinador_left">
-                            <field name="x_coordinador"/>
-                        </group>
-                        <group name="group_brigadista_left">
-                            <field name="x_brigadista"/>
-                        </group>
-                    </group>
-                    <group style="text-align: center;">
-                        <h4 style="background: #f4f4f4; border-radius: 15px;">MONTAJE Y LOGISTICA</h4>
-                    </group>
-                    <group name="studio_group_0efW2">
-                        <group name="studio_group_0efW2_left" string="Montaje de mobiliario">                            
-                            <a href="https://promotorasocialmexico-testing-1461473.dev.odoo.com/web#action=473&amp;model=event.distribucion&amp;view_type=kanban&amp;cids=1&amp;menu_id=336"
-                               target="_blank">Ver catálogo de distribución
-                            </a>
-                            <field name="x_distribucion"/>
-                            <field name="x_especificacion_de_distribucion"/>
-                        </group>
-                        <group name="studio_group_0efW2_right" string="Maestra de ceremonias">
-                            <field name="x_servicio_de_ceremonias"/>
-                            <field name="x_especificacion_de_ceremonia"/>
-=======
                 <xpath expr="//form[1]/sheet[1]/div[not(@name)][1]" position="after">
                     <group name="studio_group_9StUL">
                         <group name="studio_group_9StUL_left">
@@ -260,75 +81,41 @@
                         <group name="studio_group_0efW2_right" string="Maestra de ceremonias">
                             <field name="x_servicio_de_ceremonias" string="Servicio"/>
                             <field name="x_especificacion_de_ceremonia" string="Especificación"/>
->>>>>>> production
                         </group>
                     </group>
                     <group name="studio_group_Qrz0a">
                         <group name="studio_group_Qrz0a_left" string="Audio visual">
-<<<<<<< HEAD
-                            <field name="x_audio_visual" widget="many2many_tags"/>
-                            <field name="x_especificacion_audio_visual"/>
-                        </group>
-                        <group name="studio_group_Qrz0a_right" string="Equipo extra">
-                            <field name="x_equipo_extra" widget="many2many_tags"/>
-                            <field name="x_especificacion_equipo_extra"/>
-=======
                             <field name="x_audio_visual" widget="many2many_tags" string="Audio visual"/>
                             <field name="x_especificacion_audio_visual" string="Especificación"/>
                         </group>
                         <group name="studio_group_Qrz0a_right" string="Equipo extra">
                             <field name="x_equipo_extra" widget="many2many_tags" string="Equipo extra"/>
                             <field name="x_especificacion_equipo_extra" string="Especificación"/>
->>>>>>> production
                         </group>
                     </group>
                     <group name="studio_group_V5Hrc">
                         <group name="studio_group_V5Hrc_left" string="Fotografía">
-<<<<<<< HEAD
-                            <field name="x_servicio_fotografia"/>
-                            <field name="x_especificacion_fotografia"/>
-                        </group>
-                        <group name="studio_group_V5Hrc_right" string="Video">
-                            <field name="x_servicio_video"/>
-                            <field name="x_especificacion_video"/>
-=======
                             <field name="x_servicio_fotografia" string="Servicio"/>
                             <field name="x_especificacion_fotografia" string="Especificación"/>
                         </group>
                         <group name="studio_group_V5Hrc_right" string="Video">
                             <field name="x_servicio_video" string="Servicio"/>
                             <field name="x_especificacion_video" string="Especificación"/>
->>>>>>> production
                         </group>
                     </group>
                     <group name="studio_group_Bx9h9">
                         <group name="studio_group_Bx9h9_left" string="Diseño">
                             <field name="x_diseno" widget="many2many_tags"/>
-<<<<<<< HEAD
-                            <field name="x_especificacion_diseno"/>
-                        </group>
-                        <group name="studio_group_Bx9h9_right" string="Articulos Promocionales">
-                            <field name="x_articulos" widget="many2many_tags"/>
-                            <field name="x_especificacion_articulos"/>
-=======
                             <field name="x_especificacion_diseno" string="Especificación"/>
                         </group>
                         <group name="studio_group_Bx9h9_right" string="Articulos Promocionales">
                             <field name="x_articulos" widget="many2many_tags" string="Articulos"/>
                             <field name="x_especificacion_articulos" string="Especificación"/>
->>>>>>> production
                         </group>
                     </group>
                     <group name="studio_group_lyySZ">
                         <group name="studio_group_lyySZ_left" string="Catering">
                             <field name="x_catering" widget="many2many_tags"/>
-<<<<<<< HEAD
-                            <field name="x_especificacion_catering"/>
-                        </group>
-                        <group name="studio_group_gieIU_right" string="Ponentes">
-                            <field name="x_ponentes" widget="many2many_tags" domain="[['is_company','!=',True]]"/>
-                            <field name="x_especificacion_ponente"/>
-=======
                             <!--                                <form>-->
                             <!--                                    <sheet string="Catering" name="studio_sheet_1e4ae2">-->
                             <!--                                        <div class="oe_title" name="studio_div_b2a377">-->
@@ -381,59 +168,10 @@
                             <!--                                </tree>-->
                             <!--                            </field>-->
                             <field name="x_especificacion_ponente" string="Especificación"/>
->>>>>>> production
                         </group>
                     </group>
                     <group name="studio_group_gieIU">
                         <group name="studio_group_gieIU_left" string="Encargados de servicio">
-<<<<<<< HEAD
-                            <field name="x_encargado_de_bar" domain="[['is_company','=',True]]"/>
-                            <field name="x_encargado_de_cocina" domain="[['is_company','=',True]]"/>
-                            <field name="x_encargado_de_mesa" domain="[['is_company','=',True]]"/>
-                        </group>
-                        <group name="studio_group_lyySZ_right" string="Redes Sociales">
-                            <field name="x_twitter" widget="url"/>
-                            <field name="x_facebook" widget="url"/>
-                            <field name="x_instagram" widget="url"/>
-                            <field name="x_linkedin" widget="url"/>
-                            <field name="x_otros" widget="url"/>
-                            <field name="x_texto_descriptivo"/>
-                        </group>
-                    </group>
-                    <group name="group_configuraciones_odoo" style="text-align: center;">
-                        <h4 style="background: #fff2f2; border-radius: 15px; padding: 2px; color: #9a1212;">
-                            CONFIGURACIONES ODOO
-                        </h4>
-                    </group>
-                </xpath>
-
-                <!-- Inicio - Configuracion nueva de campos existentes -->
-                <xpath expr="//field[@name='organizer_id']" position="attributes">
-                    <attribute name="attrs">{}</attribute>
-                    <attribute name="force_save">True</attribute>
-                    <attribute name='invisible'>1</attribute>
-                    <attribute name="readonly">1</attribute>
-                    <attribute name="string">Organizador</attribute>
-                </xpath>
-                <xpath expr="//field[@name='auto_confirm']" position="attributes">
-                    <attribute name='invisible'>1</attribute>
-                </xpath>
-                <xpath expr="//field[@name='user_id']" position="replace"/>
-                <xpath expr="//field[@name='x_solicitante']" position="after">
-                    <field name="user_id" readonly="1" string="Creador del evento"/>
-                </xpath>
-                <xpath expr="//field[@name='address_id']" position="replace"/>
-                <xpath expr="//field[@name='x_area']" position="before">
-                    <field name="address_id"/>
-                </xpath>
-                <xpath expr="//field[@name='event_type_id']" position="replace"/>
-                <xpath expr="//field[@name='x_tipo_de_evento']" position="before">
-                    <field name="event_type_id"/>
-                </xpath>
-                <xpath expr="//field[@name='event_type_id']" position="attributes">
-                    <attribute name="attrs">{}</attribute>
-                    <attribute name="string">Categoria Odoo</attribute>
-=======
                             <field name="x_encargado_de_bar" string="Encargado de Bar" domain="[['is_company','=',True]]"/>
                             <field name="x_encargado_de_cocina" string="Encargado de cocina" domain="[['is_company','=',True]]"/>
                             <field name="x_encargado_de_mesa" string="Encargado de Mesa" domain="[['is_company','=',True]]"/>
@@ -447,7 +185,6 @@
                         </group>
 
                     </group>
->>>>>>> production
                 </xpath>
             </data>
         </field>

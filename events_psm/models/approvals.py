@@ -1,11 +1,7 @@
 import requests
 import base64
 from odoo import models, api, _, fields
-<<<<<<< HEAD
-from datetime import datetime, date
-=======
 from datetime import datetime
->>>>>>> production
 from odoo.http import request
 from odoo.exceptions import AccessError, UserError, RedirectWarning, ValidationError, Warning
 from datetime import timedelta
@@ -18,11 +14,7 @@ class ApprovalRequest(models.Model):
     def _default_lineamiento_id(self):
         return self.env['approval.lineamiento'].search([('id', '=', '1')], limit=1)
 
-<<<<<<< HEAD
-    x_lineamiento = fields.Many2one('approval.lineamiento', string="Lineamiento",
-=======
     x_lineamiento = fields.Many2one('approval.lineamiento', string="Lineamiento de uso CoLab",
->>>>>>> production
                                     default=_default_lineamiento_id)
     x_estoy_de_acuerdo = fields.Selection(selection=[('si', 'Sí'), ('no', 'No'), ], string=_('¿Esta de acuerdo?'),)
 
@@ -34,23 +26,12 @@ class ApprovalRequest(models.Model):
 
     x_organizadores = fields.Many2many('res.partner', string="Organizadores")
 
-<<<<<<< HEAD
-    x_fecha_del_evento = fields.Date(string="Fecha del evento")
-
-    x_hora_de_inicio = fields.Float(string="Hora de inicio")
-    x_hora_de_fin = fields.Float(string="Hora de fin")
-
-    x_cantidad = fields.Integer(string="Cantidad")
-
-    x_colaborador = fields.Many2one('hr.employee', string="Host PSM")
-=======
     x_inicio_del_evento = fields.Datetime(string="Inicio del evento")
     x_fin_del_evento = fields.Datetime(string="Fin del evento")
 
     x_cantidad = fields.Integer(string="Cantidad")
 
     x_colaborador = fields.Many2one('hr.employee', string="Colaborador")
->>>>>>> production
     x_departamento = fields.Char(string='Departamento', related='x_colaborador.department_id.name')
 
     x_encargado_externo = fields.Many2one('res.partner', string="Encargado externo")
@@ -71,11 +52,6 @@ class ApprovalRequest(models.Model):
     x_evento = fields.Many2one('event.event', string="Evento")
     x_evento_creado = fields.Datetime(string="Evento creado el")
 
-<<<<<<< HEAD
-    x_fecha_de_solicitud = fields.Date(string="Fecha de solicitud", default=lambda self: fields.datetime.now())
-
-=======
->>>>>>> production
     @api.onchange('x_cantidad')
     def _capacidad_maxima(self):
         if self.x_tipo_del_evento == 'presencial':
@@ -88,27 +64,6 @@ class ApprovalRequest(models.Model):
     def _borrar_datos(self):
         if self.x_tipo_del_evento == 'presencial':
             self.x_cantidad = 0
-<<<<<<< HEAD
-            self.x_hora_de_inicio = False
-            self.x_hora_de_fin = False
-        elif self.x_tipo_del_evento == 'enlinea':
-            self.x_cantidad = 0
-            self.x_hora_de_inicio = False
-            self.x_hora_de_fin = False
-            self.x_requiere_servicio_de_catering = 'no'
-
-    @api.onchange('x_fecha_del_evento')
-    def _fecha_del_evento(self):
-        if self.x_tipo_del_evento == 'presencial':
-            two_weeks = date.today() + timedelta(days=14)
-
-            star_date_format = two_weeks
-            two_weeks_format = self.x_fecha_del_evento
-
-            if self.x_fecha_del_evento:
-                if star_date_format > two_weeks_format:
-                    self.x_fecha_del_evento = False
-=======
             self.x_inicio_del_evento = False
             self.x_fin_del_evento = False
         elif self.x_tipo_del_evento == 'enlinea':
@@ -129,65 +84,11 @@ class ApprovalRequest(models.Model):
                 if star_date_format > two_weeks_format:
                     self.x_inicio_del_evento = False
                     self.x_fin_del_evento = False
->>>>>>> production
                     return {'value': {},
                             'warning': {'title': 'Restricción',
                                         'message': 'Seleccione una fecha despues del ' + two_weeks.strftime("%d/%m/%Y")}
                             }
 
-<<<<<<< HEAD
-    @api.onchange('x_hora_de_inicio', 'x_hora_de_fin')
-    def _formato_de_horas(self):
-        if self.x_hora_de_inicio > 24:
-            self.x_hora_de_inicio = 0
-            return {'value': {},
-                    'warning': {'title': 'Restricción',
-                                'message': 'El formato de fecha debe ser de 24 hrs'}
-                    }
-        if self.x_hora_de_fin > 24:
-            self.x_hora_de_fin = 0
-            return {'value': {},
-                    'warning': {'title': 'Restricción',
-                                'message': 'El formato de fecha debe ser de 24 hrs'}
-                    }
-        if self.x_hora_de_inicio == 0:
-            self.x_hora_de_fin = 0
-
-    @api.onchange('x_hora_de_inicio')
-    def _diferencia_de_hora_inicio(self):
-        if self.x_hora_de_fin > 0:
-            if self.x_hora_de_inicio > self.x_hora_de_fin:
-                self.x_hora_de_inicio = 0
-                self.x_hora_de_fin = 0
-                return {'value': {},
-                        'warning': {'title': 'Restricción',
-                                    'message': 'La hora de inicio no puede ser mayor a la hora de fin por favor use el formato de 24 hrs.'}
-                        }
-
-    @api.onchange('x_hora_de_fin')
-    def _diferencia_de_hora_fin(self):
-        if self.x_hora_de_inicio > self.x_hora_de_fin:
-            self.x_hora_de_fin = 0
-            return {'value': {},
-                    'warning': {'title': 'Restricción',
-                                'message': 'La hora de inicio no puede ser mayor a la hora de fin por favor use el formato de 24 hrs.'}
-                    }
-
-    def create_event(self):
-
-        if self.x_cordinador.id is False:
-            raise Warning(_("Por favor agregue al Coordinador para poder crear el evento"))
-
-        elif self.x_brigadista.id is False:
-            raise Warning(_("Por favor agregue al Brigadista para poder crear el evento"))
-
-        else:
-            IdSolicitud = self.id
-            NombreDelEvento = self.x_nombre_del_evento
-            FechaEvento = self.x_fecha_del_evento
-            HoraInicio = self.x_hora_de_inicio
-            HoraFin = self.x_hora_de_fin
-=======
     def create_event(self):
 
         if self.id:
@@ -196,7 +97,6 @@ class ApprovalRequest(models.Model):
             NombreDelEvento = self.x_nombre_del_evento
             FechaInicio = self.x_inicio_del_evento
             FechaFin = self.x_fin_del_evento
->>>>>>> production
             MaximoPersonas = self.x_cantidad
             organizaciones = self.x_organizadores
             Catering = self.x_requiere_servicio_de_catering
@@ -204,28 +104,11 @@ class ApprovalRequest(models.Model):
             Coordinador = self.x_cordinador
             Brigadista = self.x_brigadista
 
-<<<<<<< HEAD
-            tiempo = datetime.min.time()
-            fecha = datetime.combine(FechaEvento, tiempo)
-
-            horas_inicio, minutos_inicio = divmod(HoraInicio, 1)
-            horas_fin, minutos_fin = divmod(HoraFin, 1)
-
-            hora_inicio = timedelta(hours=horas_inicio + 5, minutes=minutos_inicio)
-            hora_fin = timedelta(hours=horas_fin + 5, minutes=minutos_fin)
-
-            hora_registro = self.x_hora_de_inicio - 0.50
-            hora_salida = self.x_hora_de_fin + 0.50
-
-            FechaInicio = fecha + hora_inicio
-            FechaFin = fecha + hora_fin
-=======
             hora_de_registro = FechaInicio - timedelta(hours=0, minutes=30)
             hora_de_salida = FechaFin + timedelta(hours=0, minutes=30)
 
             diferencia_de_fechas = hora_de_salida - hora_de_registro
             evento_en_horas = diferencia_de_fechas.total_seconds() / 3600
->>>>>>> production
 
             if TipoDeEvento == 'En linea':
                 EsEnLinea = True
@@ -241,23 +124,6 @@ class ApprovalRequest(models.Model):
                 'name': NombreDelEvento,
                 'x_solicitud_enviada_en': 'tiempo',
                 'x_area': [(4, area.id)],
-<<<<<<< HEAD
-                'x_fecha_del_evento': FechaEvento,
-                'date_begin': FechaInicio,
-                'date_end': FechaFin,
-                'x_hora_inicio_del_evento': HoraInicio,
-                'x_hora_fin_del_evento': HoraFin,
-                'x_hora_de_registro': hora_registro,
-                'x_hora_maxima_de_salida': hora_salida,
-                'seats_min': 0,
-                'seats_availability': 'limited',
-                'seats_max': MaximoPersonas,
-                'x_invitados_proyectados': MaximoPersonas,
-                'x_requiere_catering': Catering,
-                'is_online': EsEnLinea,
-                'event_type_id': TipoEvento,
-                'x_organizadores': [(6, 0, organizaciones.ids)]
-=======
                 'date_begin': FechaInicio,
                 'date_end': FechaFin,
                 'seats_min': 0,
@@ -272,7 +138,6 @@ class ApprovalRequest(models.Model):
                 'x_organizadores': [(6, 0, organizaciones.ids)],
                 'x_coordinador': Coordinador.id,
                 'x_brigadista': Brigadista.id
->>>>>>> production
             }
 
             new_event = request.env['event.event'].sudo().create(vals)
@@ -300,12 +165,9 @@ class ApprovalRequest(models.Model):
 
             print("Evento creado")
 
-<<<<<<< HEAD
-=======
         else:
             raise Warning(_("Por favor verifique que todos los campos esten llenos"))
 
->>>>>>> production
     def _crear_seguidor(self, res_id, model, partner_id):
         follower_id = False
         reg = {

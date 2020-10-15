@@ -1,7 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_account_move_sector,access.account.move.sector,model_account_move_sector,,1,1,1,1
-access_account_move_subsector,access.account.move.subsector,model_account_move_subsector,,1,1,1,1
-access_account_move_tipo_comprobante,access.account.move.tipo.comprobante,model_account_move_tipo_comprobante,,1,1,1,1
-access_account_move_centro_de_costos,access.account.move.centro.de.costos,model_account_move_centro_de_costos,,1,1,1,1
-access_proyecto,access.proyecto,model_proyecto,,1,1,1,1
-access_account_partida_de_egresos,access.account.partida.de.egresos,model_account_partida_de_egresos,,1,1,1,1

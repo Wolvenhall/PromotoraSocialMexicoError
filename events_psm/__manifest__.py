@@ -15,11 +15,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-<<<<<<< HEAD
-    'depends': ['base', 'approvals', 'purchase', 'purchase_requisition'],
-=======
     'depends': ['base', 'approvals'],
->>>>>>> production
     "data": [
         "security/ir.model.access.csv",
         "views/menu.xml",
@@ -35,11 +31,6 @@
         "views/equipoextra.xml",
         "views/event_views.xml",
         "views/product_etiqueta.xml",
-<<<<<<< HEAD
-        "views/categoria.xml",
-        "views/relacion.xml",
-=======
->>>>>>> production
     ],
     "test": [],
     'installable': True,
