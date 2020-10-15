@@ -87,6 +87,7 @@ class ProductProduct(models.Model):
     _inherit = "product.template"
 
     x_etiqueta_catering = fields.Many2many('event.etiqueta.catering', string="Etiqueta catering")
+<<<<<<< HEAD
 
 
 class Categoria(models.Model):
@@ -114,3 +115,5 @@ class Lineamiento(models.Model):
 
     name = fields.Text('Nombre del Lineamiento')
     lineamiento = fields.Binary(string="Documento de Lineamiento")
+=======
+>>>>>>> production

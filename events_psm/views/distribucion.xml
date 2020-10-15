@@ -32,12 +32,17 @@
                         </h1>
                     </div>
                     <group name="studio_group_09b814">
+<<<<<<< HEAD
                         <group name="studio_group_09b814_left">
                             <field name="capacity" string="Capacidad Maxima"/>
                         </group>
                         <group name="studio_group_09b814_right">
                             <field name="image" options="{'size':[0,270]}" widget="image" string="Imagen"/>
                         </group>
+=======
+                        <group name="studio_group_09b814_left"/>
+                        <group name="studio_group_09b814_right"/>
+>>>>>>> production
                     </group>
                 </sheet>
             </form>
@@ -73,11 +78,22 @@
         <field name="active" eval="True"/>
         <field name="arch" type="xml">
             <data>
+<<<<<<< HEAD
                 <xpath expr="//group[@name='studio_group_09b814_left']" position="inside">
 
                 </xpath>
                 <xpath expr="//group[@name='studio_group_09b814_right']" position="inside">
 
+=======
+                <xpath expr="//field[@name='name']" position="attributes">
+                    <attribute name="string">Nombre de distribución</attribute>
+                </xpath>
+                <xpath expr="//group[@name='studio_group_09b814_left']" position="inside">
+                    <field name="capacity" string="Capacidad Maxima"/>
+                </xpath>
+                <xpath expr="//group[@name='studio_group_09b814_right']" position="inside">
+                    <field name="image" options="{'size':[0,270]}" widget="image" string="Imagen"/>
+>>>>>>> production
                 </xpath>
             </data>
         </field>
@@ -91,6 +107,7 @@
         <field name="priority">99</field>
         <field name="type">form</field>
     </record>
+<<<<<<< HEAD
     <record id="customization_kanban_distribucion" model="ir.ui.view">
         <field name="active" eval="True"/>
         <field name="arch" type="xml">
@@ -136,6 +153,8 @@
         <field name="priority">99</field>
         <field name="type">kanban</field>
     </record>
+=======
+>>>>>>> production
     <menuitem
             id="menu_event_distribucion"
             name="Distribución"

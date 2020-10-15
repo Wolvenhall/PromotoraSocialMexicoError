@@ -9,6 +9,10 @@ access_event_distribucion,access.event.distribucion,model_event_distribucion,bas
 access_event_equipo_extra,access.event.equipo.extra,model_event_equipo_extra,base.group_user,1,1,1,1
 access_event_audiencia,access.event.audiencia,model_event_audiencia,base.group_user,1,1,1,1
 access_event_area,access.event.area,model_event_area,base.group_user,1,1,1,1
+<<<<<<< HEAD
 access_event_etiqueta_catering,access.event.etiqueta.catering,model_event_etiqueta_catering,base.group_user,1,1,1,1
 access_event_categoria,access.event.categoria,model_event_categoria,base.group_user,1,1,1,1
 access_event_relacion,access.event.relacion,model_event_relacion,base.group_user,1,1,1,1
+=======
+access_event_etiqueta_catering,access.event.etiqueta.catering,model_event_etiqueta_catering,base.group_user,1,1,1,1
+>>>>>>> production
