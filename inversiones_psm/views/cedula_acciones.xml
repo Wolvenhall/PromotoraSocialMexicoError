@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!--Tree view-->
+    <record id="cedula_acciones_tree_view" model="ir.ui.view">
+        <field name="name">cedula.accion.tree</field>
+        <field name="model">inversion.cedula.accion</field>
+        <field name="arch" type="xml">
+            <tree string="Acciones" editable="top" class="class_custom_acciones">
+
+                <field name="asociada_id" invisible="1"/>
+                <field name="acciones_id"/>
+                <field name="egreso"/>
+                <field name="movimiento"/>
+                <field name="acto"/>
+                <field name="fecha_del_documento"/>
+                <field name="documento"/>
+                <field name="documento_legal_firmado"/>
+
+                <field name="acciones_capital_fijo"/>
+                <field name="acciones_capital_variable"/>
+                <field name="acciones_totales" class="color_field_total"/>
+                <field name="aumento_capital_fijo"/>
+                <field name="aumento_capital_variable"/>
+
+                <field name="acciones_totales_final"/>
+                <field name="acciones_suscritas_psm"/>
+                <field name="acciones_totales_psm"/>
+                <field name="monto_invertido_psm"/>
+                <field name="fecha_de_pago"/>
+                <field name="porcentaje_de_participacion"/>
+
+            </tree>
+        </field>
+    </record>
+
+<!--    &lt;!&ndash;Form view&ndash;&gt;-->
+<!--    <record id="cedula_acciones_form_view" model="ir.ui.view">-->
+<!--        <field name="name">cedula.acciones.form</field>-->
+<!--        <field name="model">inversiones.cedula.acciones</field>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <form string="Acciones">-->
+<!--                <sheet>-->
+<!--                    <group>-->
+<!--                        <group>-->
+<!--                            <field name="acciones_id"/>-->
+<!--                        </group>-->
+<!--                        <group>-->
+<!--                        </group>-->
+<!--                    </group>-->
+<!--                </sheet>-->
+<!--            </form>-->
+<!--        </field>-->
+<!--    </record>-->
+
+    <!--Action acciones menu-->
+    <record id="action_cedula_accion" model="ir.actions.act_window">
+        <field name="name">Cédula Patrimonial de Asociadas Acciones</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">inversion.cedula.accion</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crea tu primer registro de Acciones de la asociada
+            </p>
+        </field>
+    </record>
+
+    <menuitem
+            id="acciones_cedula_acciones"
+            name="Acciones"
+            parent="inversiones_cedula"
+            action="action_cedula_accion"
+    />
+</odoo>

@@ -13,7 +13,11 @@
     </record>
     <menuitem
             id="menu_event_equipo_extra"
+<<<<<<< HEAD
+            name="Equipo extra"
+=======
             name="Audio visual"
+>>>>>>> production
             parent="menu_event_catalogos"
             action="action_event_equipo_extra"
             sequence="27"/>

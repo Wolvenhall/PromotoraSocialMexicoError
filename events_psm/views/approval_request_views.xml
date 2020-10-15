@@ -1,24 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+<<<<<<< HEAD
+=======
 
+>>>>>>> production
     <!--Action Definition-->
     <record id="action_import_approval" model="ir.actions.client">
         <field name="name">Employees Import</field>
         <field name="tag">import</field>
         <field name="params">{ 'model': 'approval.request' }</field>
     </record>
+<<<<<<< HEAD
+=======
 
+>>>>>>> production
     <record id="approval_inherit_form" model="ir.ui.view">
         <field name="active" eval="True"/>
         <field name="arch" type="xml">
             <data>
                 <xpath expr="//button[@name='action_cancel']" position="after">
                     <button name="%(action_import_approval)d" string="Import Approvals Data" type="action"/>
+<<<<<<< HEAD
+                    <button name="create_event" string="Crear evento" type="object" class="btn-primary"
+                            attrs="{'invisible':['|',['x_evento', '!=', False],['request_status','not in',['approved']]]}"
+                            style="background: #bb76a9; color: #ffffff;"/>
+=======
                     <button name="create_event" string="Crear evento" type="object" class="btn-primary" attrs="{'invisible':['|',('x_evento', '!=', False),('request_status','not in',['approved'])]}" style="background: #ff0000; color: white;" />
+>>>>>>> production
                 </xpath>
                 <xpath expr="//button[@name='create_event']" position="attributes">
                     <attribute name="effect">{"message":"EVENTO CREADO!","fadeout":"medium"}</attribute>
                 </xpath>
+<<<<<<< HEAD
+                <xpath expr="//form[1]/sheet[1]/div[2]" position="before">
+                    <group name="group_titulo_lineamiento"
+                           attrs="{'invisible': ['|',['category_id','!=',9], '&amp;' ,['x_estoy_de_acuerdo','in',['si', 'no']], '&amp;' ,['request_status','in',['approved','pending']]]}">
+                        <h4 style="background: #ffebeb; border-radius: 5px; color: #c10000; text-align: center; padding: 5px;">
+                                LEA EL SIGUIENTE LINEAMIENTO
+                        </h4>
+                    </group>
+                    <group name="group_lineamientos"
+                           attrs="{'invisible': ['|',['category_id','!=',9], '&amp;' ,['request_status','in',['approved','pending']]]}">
+                        <group name="group_lineamientos">
+                            <field name="x_lineamiento" force_save="True" attrs="{}" readonly="1"/>
+                        </group>
+                        <group name="group_estoy_de_acuerdo" attrs="{'invisible': [['category_id','!=',9]]}">
+                            <field name="x_estoy_de_acuerdo" attrs="{'required': [['category_id','=',9]]}"/>
+                        </group>
+                    </group>
+                    <group name="group_titulo_logistica"
+                           attrs="{'invisible': ['|',['category_id','!=',9], '&amp;' ,['request_status','not in',['approved']]]}">
+                        <h4 style="background: #e9f8ff; border-radius: 5px; color: #1a4675; text-align: center; padding: 5px;">
+                                ENCARGADOS DE LOGISTICA DEL EVENTO
+                        </h4>
+                    </group>
+                    <group name="group_logistica" attrs="{'invisible': ['|',['category_id','!=',9], '&amp;' ,['request_status','not in',['approved']]]}" style="color: #042054;">
+                        <group name="group_coordinador">
+                            <field name="x_cordinador"
+                                   domain="[['department_id.name','=','Comunicación']]"
+                                   attrs="{'invisible': [['request_status','!=','approved']]}"/>
+                        </group>
+                        <group name="group_brigadista"
+                               attrs="{'invisible': [['request_status','!=','approved']]}">
+                            <field name="x_brigadista" string="Brigadista"
+                                   attrs="{'invisible': [['request_status','!=','approved']]}"
+                                   domain="['|',['department_id.name','=','Comunicación'],['department_id.name','=','Servicios Generales y Recursos Materiales']]"/>
+                        </group>
+                    </group>
+                    <group name="group_datos_de_la_solicitud" style="text-align: center;"
+                           attrs="{'invisible': ['|',['category_id','!=',9], '&amp;' ,['request_status','not in',['approved']]]}">
+                        <h4 style="background: #f4f4f4; border-radius: 5px; padding: 3px;">
+                                DATOS DE LA SOLICITUD
+                        </h4>
+                    </group>
+=======
                 <xpath expr="//form[1]/sheet[1]/div[2]" position="after">
                     <group name="group_lineamientos_y_logistica" attrs="{'invisible': [['category_id','!=',9], ]}"
                            style="color: red;">
@@ -31,6 +86,7 @@
                             <field name="x_brigadista" string="Brigadista" attrs="{'invisible': [['request_status','!=','approved']]}" domain="['|',['department_id.name','=','Comunicación'],['department_id.name','=','Servicios Generales y Recursos Materiales']]"/>
                         </group>
                     </group>
+>>>>>>> production
                 </xpath>
                 <xpath expr="//field[@name='request_owner_id']" position="attributes">
                     <attribute name="attrs">{"invisible": [["request_status","=","new"]]}</attribute>
@@ -39,7 +95,11 @@
                     <attribute name="string">Solicitante</attribute>
                 </xpath>
                 <xpath expr="//field[@name='request_owner_id']" position="after">
+<<<<<<< HEAD
+                    <field name="x_fecha_de_solicitud" string="Fecha de solicitud" readonly="1"/>
+=======
                     <field name="create_date" string="Fecha de solicitud" attrs="{'invisible': [['create_date','=',False]]}"/>
+>>>>>>> production
                 </xpath>
                 <xpath expr="//field[@name='category_id']" position="attributes">
                     <attribute name="attrs">{"readonly": True}</attribute>
@@ -48,6 +108,87 @@
                 </xpath>
                 <xpath expr="//field[@name='date_confirmed']" position="attributes">
                     <attribute name="attrs">{"invisible": [["date_confirmed","=",False]]}</attribute>
+<<<<<<< HEAD
+                    <attribute name="string">Fecha de envío para aprobación</attribute>
+                </xpath>
+                <xpath expr="//field[@name='items']" position="before">
+                    <field name="x_evento" attrs="{'invisible': [['x_evento','=',False]]}" force_save="True"
+                           readonly="1"/>
+                    <field name="x_evento_creado" string="Evento creado el"
+                           attrs="{'invisible': [['x_evento_creado','=',False]]}" force_save="True" readonly="1"/>
+                </xpath>
+                <xpath expr="//form[1]/sheet[1]/group[not(@name)][1]" position="after">
+                    <group style="text-align: center;"
+                           attrs="{'invisible': ['|', ['category_id','!=',9], '&amp;' ,['x_estoy_de_acuerdo','!=','si']]}">
+                        <h4 style="background: #f4f4f4; border-radius: 5px; padding: 3px;">DATOS DEL EVENTO</h4>
+                    </group>
+                    <group name="group_datos_del_evento"
+                           attrs="{'invisible': ['|', ['category_id','!=',9], '&amp;' ,['x_estoy_de_acuerdo','!=','si']]}">
+                        <field name="x_nombre_del_evento" string="Nombre del evento" placeholder="Ej. Congreso por el bienestar nacional"
+                                attrs="{'required': ['|', ['category_id','!=',9], '&amp;' ,['x_estoy_de_acuerdo','=','si']]}"/>
+                        <field name="x_objetivo" string="Objetivo" placeholder="En este campo por favor describa el objetivo ligado a la visión de Promotora Social México"
+                               attrs="{'required': ['|', ['category_id','!=',9], '&amp;' ,['x_estoy_de_acuerdo','=','si']]}"/>
+                        <field name="x_organizadores" widget="many2many_tags" string="Organizadores"
+                               attrs="{'required': ['|', ['category_id','!=',9], '&amp;' ,['x_estoy_de_acuerdo','=','si']]}"
+                               domain="[['is_company','=',True]]"/>
+                    </group>
+                    <group style="text-align: center;"
+                           attrs="{'invisible': ['|', ['category_id','!=',9], '&amp;' ,['x_estoy_de_acuerdo','!=','si']]}">
+                        <h4 style="background: #f4f4f4; border-radius: 5px; padding: 3px;"/>
+                    </group>
+                    <group name="group_logistica_de_evento"
+                           attrs="{'invisible': ['|', ['category_id','!=',9], '&amp;' ,['x_estoy_de_acuerdo','!=','si']]}">
+                        <group name="group_tipo_del_evento">
+                            <field name="x_tipo_del_evento" string="Tipo de evento"
+                                   attrs="{'required': ['|', ['category_id','!=',9], '&amp;' ,['x_estoy_de_acuerdo','=','si']]}"/>
+                        </group>
+                        <group name="group_personas_proyectadas">
+                            <field name="x_cantidad" string="Personas proyectadas"
+                                   attrs="{'required': ['|', ['category_id','!=',9], '&amp;' ,['x_estoy_de_acuerdo','=','si']]}"/>
+                        </group>
+                    </group>
+                    <group style="text-align: center;"
+                           attrs="{'invisible': ['|', ['category_id','!=',9], '&amp;' ,['x_estoy_de_acuerdo','!=','si']]}">
+                        <h4 style="background: #f4f4f4; border-radius: 5px; padding: 3px;"/>
+                    </group>
+                    <group name="group_logistica_de_evento"
+                           attrs="{'invisible': ['|', ['category_id','!=',9], '&amp;' ,['x_estoy_de_acuerdo','!=','si']]}">
+                        <group name="group_fecha_de_evento">
+                            <field name="x_fecha_del_evento"
+                                   attrs="{'required': ['|', ['category_id','!=',9], '&amp;' ,['x_estoy_de_acuerdo','=','si']]}"/>
+                            <field name="x_hora_de_inicio" string="Hora de inicio" widget="float_time"
+                                   attrs="{'required': ['|', ['category_id','!=',9], '&amp;' ,['x_estoy_de_acuerdo','=','si']]}"/>
+                            <field name="x_hora_de_fin" string="Hora de fin" widget="float_time"
+                                   attrs="{'required': ['|', ['category_id','!=',9], '&amp;' ,['x_estoy_de_acuerdo','=','si']], 'invisible': [['x_hora_de_inicio','=',0]]}"/>
+                        </group>
+                        <group name="group_catering"
+                           attrs="{'invisible': ['|', ['category_id','!=',9], '&amp;' ,['x_estoy_de_acuerdo','!=','si']]}">
+                            <field name="x_quien_paga_el_evento" string="Quien paga el evento"
+                                   attrs="{'required': ['|', ['category_id','!=',9], '&amp;' ,['x_estoy_de_acuerdo','=','si']]}"/>
+                            <field name="x_porcentaje_que_paga_psm" string="Porcentaje que paga PSM"
+                                   attrs="{'invisible': [['x_quien_paga_el_evento','!=','Ambos']]}"/>
+                            <field name="x_requiere_servicio_de_catering" string="Requiere servicio de catering"
+                                   attrs="{'required': ['|', ['category_id','!=',9], '&amp;' ,['x_estoy_de_acuerdo','=','si']]}"/>
+                        </group>
+                    </group>
+                    <group style="text-align: center;"
+                           attrs="{'invisible': ['|', ['category_id','!=',9], '&amp;' ,['x_estoy_de_acuerdo','!=','si']]}">
+                        <h4 style="background: #f4f4f4; border-radius: 5px; padding: 3px;"/>
+                    </group>
+                    <group name="group_encargados_de_evento"
+                           attrs="{'invisible': ['|', ['category_id','!=',9], '&amp;' ,['x_estoy_de_acuerdo','!=','si']]}">
+                        <group name="group_host_evento">
+                            <field name="x_colaborador"
+                                   domain="[['id','!=',1]]"
+                                   attrs="{'required': ['|', ['category_id','!=',9], '&amp;' ,['x_estoy_de_acuerdo','=','si']]}"/>
+                            <field name="x_departamento"/>
+                        </group>
+                        <group name="group_encargado_externo">
+                            <field name="x_encargado_externo" domain="[['is_company','!=',True]]"/>
+                            <field name="x_correo_electronico"/>
+                            <field name="x_movil"/>
+                        </group>
+=======
                 </xpath>
                 <xpath expr="//field[@name='items']" position="before">
                     <field name="x_evento" attrs="{'invisible': [['x_evento','=',False]]}" force_save="True" readonly="1"/>
@@ -84,6 +225,7 @@
                         <field name="x_quien_paga_el_evento" string="Quien paga el evento" attrs="{'required': [['category_id','=',9]]}"/>
                         <field name="x_porcentaje_que_paga_psm" string="Porcentaje que paga PSM" attrs="{'invisible': [['x_quien_paga_el_evento','!=','Ambos']]}"/>
                         <field name="x_requiere_servicio_de_catering" string="Requiere servicio de catering" attrs="{'required': [['category_id','=',9]]}"/>
+>>>>>>> production
                     </group>
                 </xpath>
             </data>
@@ -98,5 +240,8 @@
         <field name="priority">99</field>
         <field name="type">form</field>
     </record>
+<<<<<<< HEAD
+=======
 
+>>>>>>> production
 </odoo>

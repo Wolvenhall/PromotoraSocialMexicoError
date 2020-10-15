@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="view_survey_user_input_form_inherit" model="ir.ui.view">
+        <field name="name">view.survey.user_input.form.inherit</field>
+        <field name="model">survey.user_input</field>
+        <field name="inherit_id" ref="survey.survey_user_input_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='test_entry']" position="after">
+                <field name="evaluado"/>
+                <field name="evaluador"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_survey_user_input_tree_inherit" model="ir.ui.view">
+        <field name="name">view.survey.user_input.tree.inherit</field>
+        <field name="model">survey.user_input</field>
+        <field name="inherit_id" ref="survey.survey_user_input_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='survey_id']" position="attributes">
+                <attribute name="attrs">{}</attribute>
+                <attribute name="string">Encuesta</attribute>
+            </xpath>
+            <xpath expr="//field[@name='create_date']" position="attributes">
+                <attribute name="attrs">{}</attribute>
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="attrs">{}</attribute>
+                <attribute name="string">Contacto</attribute>
+            </xpath>
+            <xpath expr="//field[@name='input_type']" position="attributes">
+                <attribute name="attrs">{}</attribute>
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='attempt_number']" position="attributes">
+                <attribute name="attrs">{}</attribute>
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='quizz_passed']" position="attributes">
+                <attribute name="attrs">{}</attribute>
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='quizz_score']" position="attributes">
+                <attribute name="attrs">{}</attribute>
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="attrs">{}</attribute>
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='deadline']" position="after">
+                <field name="evaluado"/>
+            </xpath>
+            <xpath expr="//field[@name='deadline']" position="after">
+                <field name="evaluador"/>
+            </xpath>
+            <xpath expr="//tree" position="attributes">
+                <attribute name="decoration-danger">state == 'new'</attribute>
+                <attribute name="decoration-bf">state == 'skip'</attribute>
+                <attribute name="decoration-success">state == 'done'</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!--Tree view-->
+    <record id="red_de_evaluaciones_tree_view" model="ir.ui.view">
+        <field name="name">red.de.evaluaciones.tree</field>
+        <field name="model">red.de.evaluaciones</field>
+        <field name="arch" type="xml">
+            <tree string="Mapeo de Evaluaciones">
+                <field name="nombre"/>
+                <field name="descripcion"/>
+                <field name="fecha_inicio"/>
+                <field name="fecha_limite"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--Form view-->
+    <record id="red_de_evaluaciones_form_view" model="ir.ui.view">
+        <field name="name">red.de.evaluaciones.form</field>
+        <field name="model">red.de.evaluaciones</field>
+        <field name="arch" type="xml">
+            <form string="Mapeo de Evaluaciones">
+                <header>
+                    <button string="GENERAR RED DE COLABORADORES" name="genera_lista_de_colaboradores" type="object" class="btn-primary" style="float: left;" attrs="{'invisible': [('x_conteo_colaboradores','>','0')]}"/>
+                    <button string="GENERAR ENCUESTAS" name="genera_encuestas" type="object" class="btn-primary" style="float: left;" state="draft" attrs="{'invisible': ['|', ['x_conteo_colaboradores','==',0], ['x_conteo_encuestas','>','0']]}" confirm="¿Desea generar las encuestas para la red de colabordores?"/>
+                    <button string="ENVIAR ENCUESTAS" name="envia_encuestas" type="object" class="btn-primary" style="float: left;" state="draft" attrs="{'invisible': ['|', ['fecha_envio','!=', False], ['x_conteo_encuestas','==',0]]}" confirm="¿Desea enviar las encuestas a sus colabordores?"/>
+                    <button string="FINALIZAR EVALUACIÓN" name="finalizar_evaluacion" type="object" states="send" class="btn-success" style="float: left;" confirm="¿Desea finalizar la evaluación?"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,send,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box">
+                        <button name="muestra_colaboradores" class="oe_stat_button" icon="fa-users" type="object">
+                            <field name="x_conteo_colaboradores" widget="statinfo"/>
+                        </button>
+                        <button name="muestra_encuestas" class="oe_stat_button" icon="fa-book" type="object">
+                            <field name="x_conteo_encuestas" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" text="FINALIZADA" states="done" />
+                    <group>
+                        <group string="Datos de la Evaluación">
+                            <field name="nombre" placeholder="Nombre de la red"/>
+                            <field name="descripcion" placeholder="Breve descripción de la red"/>
+                            <field name="fecha_inicio"/>
+                            <field name="fecha_limite"/>
+                            <field name="fecha_envio" attrs="{'invisible': [('fecha_envio','==', False)]}"/>
+                            <field name="fecha_fin" attrs="{'invisible': [('fecha_fin','==', False)]}"/>
+                        </group>
+                        <group string="Encuestas">
+                            <field name="autoevaluacion"/>
+                            <field name="autoevaluacion_lider"/>
+                            <field name="jefe_directo"/>
+                            <field name="reportes_directos"/>
+                            <field name="cliente_interno"/>
+                            <field name="pares"/>
+                        </group>
+                    </group>
+                    <group style="text-align: center;">
+                        <h4 style="margin-top: 25px; background: #f4f4f4; border-radius: 15px;">PLANTILLA CORREO
+                            ELÉCTRONICO
+                        </h4>
+                    </group>
+                    <group>
+                        <field name="evaluacion_body_html" nolabel="1"/>
+                    </group>
+
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!--Action asociada menu-->
+    <record id="action_red_de_evaluaciones" model="ir.actions.act_window">
+        <field name="name">Red de Evaluaciones</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">red.de.evaluaciones</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crea tu primer Red de Evaluaciones
+            </p>
+        </field>
+    </record>
+
+    <menuitem
+            id="root_red_de_evaluaciones"
+            name="Evaluación 360"
+            action="action_red_de_evaluaciones"
+            sequence="10"
+            web_icon="evaluaciones_psm,static/description/evaluacion.png"
+    />
+</odoo>

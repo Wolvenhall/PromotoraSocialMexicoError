@@ -32,8 +32,17 @@
                         </h1>
                     </div>
                     <group name="studio_group_09b814">
+<<<<<<< HEAD
+                        <group name="studio_group_09b814_left">
+                            <field name="capacity" string="Capacidad Maxima"/>
+                        </group>
+                        <group name="studio_group_09b814_right">
+                            <field name="image" options="{'size':[0,270]}" widget="image" string="Imagen"/>
+                        </group>
+=======
                         <group name="studio_group_09b814_left"/>
                         <group name="studio_group_09b814_right"/>
+>>>>>>> production
                     </group>
                 </sheet>
             </form>
@@ -69,6 +78,13 @@
         <field name="active" eval="True"/>
         <field name="arch" type="xml">
             <data>
+<<<<<<< HEAD
+                <xpath expr="//group[@name='studio_group_09b814_left']" position="inside">
+
+                </xpath>
+                <xpath expr="//group[@name='studio_group_09b814_right']" position="inside">
+
+=======
                 <xpath expr="//field[@name='name']" position="attributes">
                     <attribute name="string">Nombre de distribución</attribute>
                 </xpath>
@@ -77,6 +93,7 @@
                 </xpath>
                 <xpath expr="//group[@name='studio_group_09b814_right']" position="inside">
                     <field name="image" options="{'size':[0,270]}" widget="image" string="Imagen"/>
+>>>>>>> production
                 </xpath>
             </data>
         </field>
@@ -90,6 +107,54 @@
         <field name="priority">99</field>
         <field name="type">form</field>
     </record>
+<<<<<<< HEAD
+    <record id="customization_kanban_distribucion" model="ir.ui.view">
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <kanban string="Distribucion">
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                            <div class="o_kanban_card_content">
+                                <field name="name" modifiers="{}"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+        <field name="field_parent" eval="False"/>
+        <field name="groups_id" eval="[(6, 0, [ref('event.group_event_manager'), ref('event.group_event_user')])]"/>
+        <field name="inherit_id" eval="False"/>
+        <field name="key" eval="False"/>
+        <field name="mode">primary</field>
+        <field name="model">event.distribucion</field>
+        <field name="name">Default kanban view</field>
+        <field name="priority">16</field>
+        <field name="type">kanban</field>
+    </record>
+    <record id="customization_kanban_distribucion_custom" model="ir.ui.view">
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <data>
+                <xpath expr="//field[@name='name']" position="after">
+                    <field display="full" name="capacity"/>
+                    <field display="full" name="image" options="{'size':[0,270]}" widget="image"/>
+                </xpath>
+            </data>
+        </field>
+        <field name="field_parent" eval="False"/>
+        <field name="groups_id" eval="[(6, 0, [])]"/>
+        <field name="inherit_id" ref="customization_kanban_distribucion"/>
+        <field name="key" eval="False"/>
+        <field name="mode">extension</field>
+        <field name="model">event.distribucion</field>
+        <field name="name">Default kanban view customization</field>
+        <field name="priority">99</field>
+        <field name="type">kanban</field>
+    </record>
+=======
+>>>>>>> production
     <menuitem
             id="menu_event_distribucion"
             name="Distribución"

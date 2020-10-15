@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!--Tree view-->
+    <record id="credito_disposicion_tree_view" model="ir.ui.view">
+        <field name="name">credito.disposicion.tree</field>
+        <field name="model">inversion.credito.disposicion</field>
+        <field name="arch" type="xml">
+            <tree string="Disposiciones">
+                <!--                <field name="linea_de_credito"/>-->
+                <field name="disposicion"/>
+                <field name="factura"/>
+                <field name="fecha_de_pago"/>
+                <field name="ministraciones"/>
+                <field name="saldo_insoluto"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--    &lt;!&ndash;Form view&ndash;&gt;-->
+    <record id="credito_disposicion_form_view" model="ir.ui.view">
+        <field name="name">credito.disposicion.form</field>
+        <field name="model">inversion.credito.disposicion</field>
+        <field name="arch" type="xml">
+            <form string="Disposiciones">
+                <sheet>
+                    <!--                    <div class="oe_button_box">-->
+                    <!--                        <button name="muestra_disposiciones" class="oe_stat_button" icon="fa-credit-card" type="object">-->
+                    <!--                            <field name="conteo_disposiciones" widget="statinfo"/>-->
+                    <!--                        </button>-->
+                    <!--                    </div>-->
+                    <group>
+                        <group>
+                            <field name="disposicion"/>
+                            <field name="factura"/>
+                        </group>
+                        <group>
+                            <field name="fecha_de_pago"/>
+                            <field name="ministraciones"/>
+                            <field name="saldo_insoluto"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Amortizaciones">
+                            <field name="amortizaciones" widget="section_and_note_one2many">
+                                <tree>
+                                    <field name="numero" class="text-justify"/>
+                                    <field name="fecha_de_pago"/>
+                                    <field name="tasa_interes_anual"/>
+
+                                    <field name="ministraciones"/>
+                                    <field name="saldo_insoluto"/>
+                                    <field name="amortizacion_de_capital"/>
+                                    <field name="intereses_devengados"/>
+                                    <field name="iva"/>
+                                    <field name="valor_factura"/>
+
+                                    <field name="total_a_pagar"/>
+                                    <field name="adeudo_intereses"/>
+                                    <field name="adeudo_iva"/>
+                                    <field name="adeudo_capital"/>
+                                    <field name="gran_total_a_pagar"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!--Action asociada menu-->
+    <record id="action_credito_disposicion" model="ir.actions.act_window">
+        <field name="name">Disposiciones</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">inversion.credito.disposicion</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crea tu primer Disposición
+            </p>
+        </field>
+    </record>
+
+    <menuitem
+            id="inversiones_disposicion"
+            name="Disposición"
+            parent="inversiones_contro_de_creditos"
+            action="action_credito_disposicion"
+    />
+</odoo>
