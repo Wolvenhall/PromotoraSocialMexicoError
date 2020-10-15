@@ -13,11 +13,7 @@
     </record>
     <menuitem
             id="menu_event_audiencia"
-<<<<<<< HEAD
-            name="Audiencia"
-=======
             name="Audio visual"
->>>>>>> production
             parent="menu_event_catalogos"
             action="action_event_audiencia"
             sequence="22"/>

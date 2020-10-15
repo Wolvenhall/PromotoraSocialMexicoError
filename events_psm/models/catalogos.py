@@ -87,33 +87,3 @@ class ProductProduct(models.Model):
     _inherit = "product.template"
 
     x_etiqueta_catering = fields.Many2many('event.etiqueta.catering', string="Etiqueta catering")
-<<<<<<< HEAD
-
-
-class Categoria(models.Model):
-    _name = "event.categoria"
-    _rec_name = 'name'
-    _description = "Categoria"
-
-    name = fields.Text('Categoría')
-    description = fields.Text(string="Descripción")
-
-
-class Relacion(models.Model):
-    _name = "event.relacion"
-    _rec_name = 'name'
-    _description = "Relacion"
-
-    name = fields.Text('Relacion')
-    description = fields.Text(string="Descripción")
-
-    
-class Lineamiento(models.Model):
-    _name = "approval.lineamiento"
-    _rec_name = 'name'
-    _description = "Lineamientos"
-
-    name = fields.Text('Nombre del Lineamiento')
-    lineamiento = fields.Binary(string="Documento de Lineamiento")
-=======
->>>>>>> production
