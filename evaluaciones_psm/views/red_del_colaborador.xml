@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <!--Tree view-->
+    <record id="red_del_colaborador_tree_view" model="ir.ui.view">
+        <field name="name">red.del.colaborador.tree</field>
+        <field name="model">red.del.colaborador</field>
+        <field name="arch" type="xml">
+            <tree string="Mapeo del Colaborador" decoration-primary="state=='process'" decoration-success="state=='done'">
+                <field name="red_de_evaluacion" invisible="1"/>
+                <field name="colaborador"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--Form view-->
+    <record id="red_del_colaborador_form_view" model="ir.ui.view">
+        <field name="name">red.del.colaborador.form</field>
+        <field name="model">red.del.colaborador</field>
+        <field name="arch" type="xml">
+            <form string="Mapeo del Colaborador">
+                <header>
+                    <button name="action_process" type="object" string="EN PROCESO" states="draft" class="btn-primary"/>
+                    <button name="action_done" type="object" string="TERMINADO" states="draft,process"
+                            class="btn-success"/>
+                    <button name="action_draft" type="object" string="BORRADOR" states="process,done"
+                            class="btn-secondary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,process,done"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="red_de_evaluacion" invisible="1"/>
+                        </group>
+                    </group>
+                    <group style="text-align: center;">
+                        <h4>COLABORADOR A EVALUAR</h4>
+                    </group>
+                    <group style="text-align: center;">
+                        <h1>
+                            <field name="colaborador"/>
+                        </h1>
+                    </group>
+                    <group style="text-align: center; font-size: 10px;">
+                        <div>
+                            Si deja vacío a los evaluadores, únicamente será aplicada la autoevaluación.
+                        </div>
+                    </group>
+                    <group style="text-align: center;">
+                        <h4 style="margin-top: 25px; background: #f4f4f4; border-radius: 15px;">EVALUADORES</h4>
+                    </group>
+                    <group>
+                        <group string="Jefes">
+                            <field name="jefes" nolabel="1">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="department_id"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group string="Reportes Directos">
+                            <field name="reportes_directos" nolabel="1">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="department_id"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Pares">
+                            <field name="pares" nolabel="1">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="department_id"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group string="Clientes Internos">
+                            <field name="clientes_internos" nolabel="1">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="department_id"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!--Action asociada menu-->
+    <record id="action_red_del_colaborador" model="ir.actions.act_window">
+        <field name="name">Red del Colaborador</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">red.del.colaborador</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crea tu primer registro para el Mapeo del colaborador
+            </p>
+        </field>
+    </record>
+
+    <!--     <menuitem
+                id="evaluaciones_red_del_colaborador"
+                name="Red del Colaborador"
+                parent="evaluaciones_root"
+                action="action_red_del_colaborador"
+        /> -->
+
+    <!--    <menuitem-->
+    <!--            id="evaluaciones_cedula_asociada"-->
+    <!--            name="Cédula Patrimonial de Asociadas"-->
+    <!--            parent="inversiones_cedula"-->
+    <!--            action="action_cedula_asociada"-->
+    <!--    />-->
+</odoo>
