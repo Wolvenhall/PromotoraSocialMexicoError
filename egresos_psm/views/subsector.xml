@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="action_account_move_subsector" model="ir.actions.act_window">
+        <field name="name">Subsector</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">account.move.subsector</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Nuevo Subsector
+            </p>
+        </field>
+    </record>
+
+<!--    <menuitem-->
+<!--        id="menu_hr_payroll_tabla_isr"-->
+<!--        name="Tabla ISR"-->
+<!--        parent="menu_hr_payroll_tabla_nomina"-->
+<!--        action="action_tabla_isr"-->
+<!--        sequence="66"/>-->
+</odoo>
