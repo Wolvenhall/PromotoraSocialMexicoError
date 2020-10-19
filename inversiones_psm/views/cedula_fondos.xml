@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!--Tree view-->
+    <record id="cedula_fondo_tree_view" model="ir.ui.view">
+        <field name="name">cedula.fondo.tree</field>
+        <field name="model">inversion.cedula.fondo</field>
+        <field name="arch" type="xml">
+            <tree string="Fondos" editable="top">
+
+                <field name="asociada_id"/>
+                <field name="fondos_id"/>
+                <field name="egreso"/>
+                <field name="movimiento"/>
+                <field name="acto"/>
+                <field name="fecha"/>
+
+                <field name="capital_total_comprometido"/>
+                <field name="capital_comprometido_psm"/>
+                <field name="capital_call_psm_usd"/>
+                <field name="monto_transferido_por_psm_usd"/>
+                <field name="tipo_de_cambio"/>
+
+                <field name="monto_invertido_por_psm_mxn"/>
+                <field name="fechadepago"/>
+                <field name="porcentaje_de_participacion"/>
+
+            </tree>
+        </field>
+    </record>
+
+<!--    &lt;!&ndash;Form view&ndash;&gt;-->
+<!--    <record id="cedula_acciones_form_view" model="ir.ui.view">-->
+<!--        <field name="name">cedula.fondos.form</field>-->
+<!--        <field name="model">inversiones.cedula.fondos</field>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <form string="accioness">-->
+<!--                <sheet>-->
+<!--                    <group>-->
+<!--                        <group>-->
+<!--                            <field name="acciones_id"/>-->
+<!--                        </group>-->
+<!--                        <group>-->
+<!--                        </group>-->
+<!--                    </group>-->
+<!--                </sheet>-->
+<!--            </form>-->
+<!--        </field>-->
+<!--    </record>-->
+
+    <!--Action acciones menu-->
+    <record id="action_cedula_fondo" model="ir.actions.act_window">
+        <field name="name">Cédula Patrimonial de Asociadas Fondos</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">inversion.cedula.fondo</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crea tu primer registro de Fondos de la asociada
+            </p>
+        </field>
+    </record>
+
+<!--    <menuitem-->
+<!--            id="acciones_cedula_fondos"-->
+<!--            name="Fondos"-->
+<!--            parent="inversiones_root"-->
+<!--            action="action_cedula_fondo"-->
+<!--    />-->
+
+</odoo>
