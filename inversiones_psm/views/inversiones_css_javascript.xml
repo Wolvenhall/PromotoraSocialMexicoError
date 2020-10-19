@@ -4,7 +4,6 @@
         <template id="assets_backend" name="inversiones_css_javascript assets" inherit_id="web.assets_backend">
             <xpath expr="." position="inside">
                 <link rel="stylesheet" href="/inversiones_psm/static/src/css/inversiones.css"/>
-                <script type="text/javascript" src="/inversiones_psm/static/src/css/inversiones.js"></script>
             </xpath>
         </template>
     </data>
