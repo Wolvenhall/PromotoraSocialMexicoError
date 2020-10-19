@@ -1,0 +1,70 @@
+from odoo import models, fields, api
+
+
+class PartidaDeEgresos(models.Model):
+    _name = 'account.partida.de.egresos'
+    _rec_name = 'codigo'
+    _description = "Partida de Egresos"
+
+    codigo = fields.Text(string="Código")
+    solicitud = fields.Text(string="Solicitud #")
+    fecha_en_que_se_requiere = fields.Text(string="Fecha en que se requiere")
+    solicita = fields.Text(string="Solicita")
+    direccion = fields.Text(string="Dirección")
+    departamento = fields.Text(string="Departamento")
+    oficina = fields.Text(string="Oficina")
+    gasto_fijo_variable_inv_social = fields.Text(string="Gasto fijo / Variable / Inv Social")
+    tipo_de_gasto = fields.Text(string="Tipo de gasto")
+    corporativo = fields.Text(string="Corporativo")
+
+    deal_unico = fields.Text(string="Deal único")
+    impacto_social = fields.Text(string="Impacto Social")
+    vehiculo = fields.Text(string="Vehículo")
+    sector = fields.Text(string="Sector")
+    subsector = fields.Text(string="Subsector")
+    fecha_de_autorizacion_donataria = fields.Text(string="Fecha de autorización donataria")
+    fecha_de_publicacion_dof = fields.Text(string="Fecha de publicación DOF")
+    area_geografica = fields.Text(string="Área Geográfica")
+    beneficiarios_directos = fields.Text(string="Beneficiarios directos")
+    beneficiarios_indirectos = fields.Text(string="Beneficiarios Indirectos")
+
+    justificacion = fields.Text(string="Justificación")
+    justify_2 = fields.Text(string="Justify 2")
+    justify_3 = fields.Text(string="Justify 3")
+    anticipo = fields.Text(string="%Anticipo")
+    moneda = fields.Text(string="Moneda")
+    tipo_de_cambio = fields.Text(string="Tipo de cambio")
+    subtotal = fields.Text(string="Subtotal")
+    iva = fields.Text(string="IVA")
+    ret_isr = fields.Text(string="Ret ISR")
+    ret_iva = fields.Text(string="Ret IVA")
+
+    importe_total_con_iva = fields.Text(string="Importe Total (c/IVA)")
+    forma_de_pago = fields.Text(string="Forma de pago")
+    nombre_del_beneficiario = fields.Text(string="Nombre del beneficiario")
+    parte_relacionada = fields.Text(string="Parte Relacionada")
+    factura = fields.Text(string="Factura")
+    metodo_de_pago = fields.Text(string="Método de pago")
+    cfdi_pago = fields.Text(string="CFDI Pago")
+    tipo_de_comprobante = fields.Text(string="Tipo de Comprobante")
+    cuenta = fields.Text(string="Cuenta")
+    banco = fields.Text(string="Banco")
+
+    cheque_emitido = fields.Text(string="Cheque emitido")
+    cheque_no = fields.Text(string="Cheque No.")
+    cheque_entregado = fields.Text(string="Cheque entregado")
+    poliza_entregada = fields.Text(string="Póliza Entregada")
+    entrega_de_poliza = fields.Text(string="Entrega de póliza")
+    recibo_no = fields.Text(string="Recibo No.")
+    observ = fields.Text(string="Observ")
+    mes_pagado = fields.Text(string="Mes pagado")
+    anio_pagado = fields.Text(string="Año pagado")
+    vobo_transferencias = fields.Text(string="VoBo Transferencias")
+
+    contrato = fields.Text(string="Contrato")
+    cuenta_contable = fields.Text(string="Cuenta Contable")
+    descripcion_de_la_cuenta_contable = fields.Text(string="Descripción de la cuenta contable")
+    centro_de_costos = fields.Text(string="Centro de Costos")
+    partida_presupuestal = fields.Text(string="Partida presupuestal")
+    ejercicio_presupuestal = fields.Text(string="Ejercicio Presupuestal")
+    proyecto = fields.Text(string="Proyecto")
