@@ -84,7 +84,7 @@ class Acciones(models.Model):
             if ultima_accion:
                 id_accion = ultima_accion.acciones_id + 1
             else:
-            id_accion = 0
+                id_accion = 0
             
         return id_accion
 

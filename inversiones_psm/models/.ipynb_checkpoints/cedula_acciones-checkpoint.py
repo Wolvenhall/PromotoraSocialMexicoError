@@ -57,18 +57,18 @@ class Acciones(models.Model):
 
     acciones_capital_fijo = fields.Integer(string="Acciones Capital Fijo", default=_calculo_acciones_capital_fijo, store=True)
     acciones_capital_variable = fields.Integer(string="Acciones Capital Variable")
-    acciones_totales = fields.Integer(string="Acciones Totales", redonly=True)
+    acciones_totales = fields.Integer(string="Acciones Totales")
 
     aumento_capital_fijo = fields.Integer(string="Aumento Capital Fijo")
     aumento_capital_variable = fields.Integer(string="Aumento Capital Variable")
-    acciones_totales_final = fields.Integer(string="Acciones Totales Final", redonly=True)
+    acciones_totales_final = fields.Integer(string="Acciones Totales Final")
 
     acciones_suscritas_psm = fields.Integer(string="Acciones Suscritas PSM")
-    acciones_totales_psm = fields.Integer(string="Acciones Totales PSM", redonly=True)
+    acciones_totales_psm = fields.Integer(string="Acciones Totales PSM")
 
     monto_invertido_psm = fields.Float(string="Monto Invertido por PSM")
     fecha_de_pago = fields.Date(string="Fecha de pago")
-    porcentaje_de_participacion = fields.Float(string="% Participación", digits=(12, 4), redonly=True)
+    porcentaje_de_participacion = fields.Float(string="% Participación", digits=(12, 4))
 
     comentarios = fields.Text(string="Comentarios")
 
@@ -84,7 +84,8 @@ class Acciones(models.Model):
             if ultima_accion:
                 id_accion = ultima_accion.acciones_id + 1
             else:
-                id_accion = 1
+                id_accion = 0
+            
         return id_accion
 
     def _acciones_totales_psm_VACIA(self):
@@ -108,8 +109,7 @@ class Acciones(models.Model):
         if accion_anterior:
             acciones_totales_psm = accion_anterior.acciones_totales_psm
             total = acciones_totales_psm + acciones_suscritas_psm
-        else:
-            total = acciones_suscritas_psm
+
         return total
 
     def _porcentaje_de_participacion(self, acciones_totales_final,  acciones_totales_psm):
