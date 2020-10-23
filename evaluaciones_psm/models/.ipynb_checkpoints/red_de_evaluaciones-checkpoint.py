@@ -345,8 +345,8 @@ class RedDeEvaluaciones(models.Model):
                 body = body.replace("[Evaluador]", colaborador.colaborador.name).replace("[FechaLimite]",
                                                                                          self.fecha_limite.strftime(
                                                                                              '%d/%m/%Y'))
-                author_id = self.create_uid.id
-                email_from = self.create_uid.email
+                author_id = self.create_uid.partner_id.id
+                email_from = self.create_uid.partner_id.email
                 mail_values = {
                     'email_from': colaborador.colaborador.work_email,
                     'author_id': author_id,
